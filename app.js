@@ -379,7 +379,7 @@ return {
     },
     formatLogData: function(array) {
       //table.classList.add('hidden');
-      if (array.length > 0) {
+      if (array && array.length > 0) {
       let table = document.querySelector(DOMStrings.logTable);
       let table2 = document.querySelectorAll('td');
       nodelistForEach(table2, function(el) {return el.remove();})  ;
@@ -412,14 +412,14 @@ return {
       const text = text_input.disabled ? undefined : text_input;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
-  
+      /*
       if (files && files.length > 0) {
         if (!navigator.canShare || !navigator.canShare({files})) {
           logError('Error: Unsupported feature: navigator.canShare()');
           return;
         }
       }
-  
+      */
       try {
         await navigator.share({title, text});
         logText('Successfully sent share');
