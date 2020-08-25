@@ -433,7 +433,7 @@ return {
       }
       */
       try {
-        await navigator.share({title, text});
+        await navigator.share({title: title, text: text});
         logText('Successfully sent share');
       } catch (error) {
         logError('Error sharing: ' + error);
