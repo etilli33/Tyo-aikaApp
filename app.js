@@ -421,7 +421,7 @@ return {
   
   
       const title = title_input.disabled ? undefined : title_input;
-      const text = text_input.disabled ? undefined : text_input;
+      const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
       /*
