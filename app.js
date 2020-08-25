@@ -420,8 +420,7 @@ return {
   
   
       const title = 'Työajanseuranta';
-      const text = 'Päivä	Sisään	Ulos	Työpäivä	Saldo	Oma aika
-      25.8.2020	2:57:47 PM	3:40:44 PM	00:42	-06:45	00:07';
+      const text = 'Päivä	Sisään	Ulos	Työpäivä	Saldo	Oma aika\n      25.8.2020	2:57:47 PM	3:40:44 PM	00:42	-06:45	00:07';
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
