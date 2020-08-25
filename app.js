@@ -335,7 +335,19 @@ let UIController = (function() {
   let reset = function() {
     document.querySelector(DOMStrings.workingTimeInput).value = '07:21';
     document.querySelector(DOMStrings.workingTimePercent).value = 100;
-  }
+  };
+
+      //error function for webshare function
+      function logText(message, isError) {
+        if (isError)
+          console.error(message);
+        else
+          console.log(message);
+      }
+  
+      function logError(message) {
+        logText(message, true);
+      }
 return {
     getDOMStrings: function() {
       return DOMStrings;
