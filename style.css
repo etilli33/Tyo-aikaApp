@@ -28,6 +28,26 @@ h1 {
   margin:auto;
 }
 
+.share-button {
+  background-color: #e67300;
+  color: white;
+  border-radius: 50px;
+  height: 50px;
+  width: 50px;
+  position: fixed;
+  right: 20px;
+  margin: 15px 5%;
+  border: 0px;
+}
+
+.ion-android-share-alt {
+  font-size: 30px;
+  text-align: center;
+  box-sizing: border-box;
+  margin-left: -3px;
+  margin-bottom: -30px;
+}
+
 .wrapper-inner {
   margin: 0 5%;
   padding-bottom: 40px;
@@ -38,7 +58,6 @@ h1 {
 }
 
 .tyoaika {
-
 border: 2px solid #e7e7e7;
 margin: 10px 0px;
 font-size: 18px;
