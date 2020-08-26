@@ -32,7 +32,7 @@ let AppController = (function() {
     saldo: 0,
     startingSaldo: 0,
     dailySaldo: [], //array of objects with date and saldo pairs
-    name: ''
+    name: ' '
   };
 
   let calcDayString = function(now) {
