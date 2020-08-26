@@ -416,24 +416,24 @@ return {
         return;
       }
   
-      const text_input = document.querySelector(DOMStrings.historyTable);
-  
-  
+      const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
+      const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
+      let table += tableTitle;
+      table += text_input;
       const title = 'Työajanseuranta';
-      const text = text_input.innerHTML;
+      const text = table;
+      const files = new File([table], 'loggings.csv', {type : 'text/csv'});
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
-      /*
       if (files && files.length > 0) {
         if (!navigator.canShare || !navigator.canShare({files})) {
           logError('Error: Unsupported feature: navigator.canShare()');
           return;
         }
       }
-      */
       try {
-        await navigator.share({title: title, text: text});
+        await navigator.share({title: title, text: text, files: files});
         logText('Successfully sent share');
       } catch (error) {
         logError('Error sharing: ' + error);
