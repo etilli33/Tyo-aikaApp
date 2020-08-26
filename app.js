@@ -32,7 +32,7 @@ let AppController = (function() {
     saldo: 0,
     startingSaldo: 0,
     dailySaldo: [], //array of objects with date and saldo pairs
-    name: ' '
+    name: ''
   };
 
   let calcDayString = function(now) {
@@ -83,7 +83,7 @@ let AppController = (function() {
        data.mostRecent.time = new Date(data.mostRecent.time);
        data.dailySaldo = storedData.dailySaldo;
        data.startingSaldo = storedData.startingSaldo;
-       data.name = storedData.name;
+       data.name = storedData.name.trim();
        //new data structure:
        if (storedData.logs.length > 0) {
        data.logs = storedData.logs;
@@ -114,7 +114,7 @@ let AppController = (function() {
        document.querySelector(DOM.settingName).value = data.name;
     },
     getName: function() {
-      return data.name;
+      return data.name.trim();
     },
      getTime: function() {
        //adds zeros to the output, if needed
