@@ -418,7 +418,7 @@ return {
   
       const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
       const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
-      let table += tableTitle;
+      let table = tableTitle;
       table += text_input;
       const title = 'Työajanseuranta';
       const text = table;
