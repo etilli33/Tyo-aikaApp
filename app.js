@@ -422,7 +422,7 @@ return {
       table += text_input;
       const title = 'Työajanseuranta';
       const text = table;
-      const files = new File([table], 'loggings.csv', {type : 'text/csv'});
+      const files = [new File([table], 'loggings.csv', {type : 'text/csv'})];
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
