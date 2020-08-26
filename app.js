@@ -429,7 +429,7 @@ return {
         logError('Error: Unsupported feature: navigator.share()');
         return;
       }
-      const userName = `${AppController.getName}
+      const userName = `${AppController.getName()}
 
 `;
       const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
