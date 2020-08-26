@@ -537,6 +537,8 @@ let Controller = (function(AppController, UIController) {
         } else {
           logError('Error: You need to use a browser that supports this draft ' +
                    'proposal.');
+          //hide button, if not supported
+          document.querySelector(DOM.shareButton).classList.add('hidden');
         }
       }
     };
