@@ -31,7 +31,8 @@ let AppController = (function() {
     workingTime: 26460000,
     saldo: 0,
     startingSaldo: 0,
-    dailySaldo: [] //array of objects with date and saldo pairs
+    dailySaldo: [], //array of objects with date and saldo pairs
+    name: ''
   };
 
   let calcDayString = function(now) {
@@ -82,6 +83,7 @@ let AppController = (function() {
        data.mostRecent.time = new Date(data.mostRecent.time);
        data.dailySaldo = storedData.dailySaldo;
        data.startingSaldo = storedData.startingSaldo;
+       data.name = storedData.name;
        //new data structure:
        if (storedData.logs.length > 0) {
        data.logs = storedData.logs;
@@ -107,6 +109,13 @@ let AppController = (function() {
        document.querySelector(DOM.workingTimeInput).value = this.toHours(data.workingTime);
        UIController.updatePercent();
      },
+     updateName: function() {
+       const DOM = UIController.getDOMStrings();
+       document.querySelector(DOM.settingName).value = data.name;
+    },
+    getName: function() {
+      return data.name;
+    },
      getTime: function() {
        //adds zeros to the output, if needed
        function checkTime(i) {
@@ -288,9 +297,11 @@ let AppController = (function() {
        return printOut;
       }
      },
-     applySettings: function(workingTime, startingSaldo) {
+     applySettings: function(workingTime, startingSaldo, name) {
        data.workingTime = this.toMS(workingTime);
        data.startingSaldo = this.toMS(startingSaldo);
+       data.name = name;
+       this.storeData();
      },
      testing: function() {
        console.log(data);
@@ -324,13 +335,16 @@ let UIController = (function() {
     workingTimeSaldo: '#starting-saldo',
     settingsSubmit: '#settings-submit',
     historyTable: '.history',
-    shareButton: '.share-button'
+    shareButton: '.share-button',
+    settingName: '.name'
   };
   let saveSettings = function() {
     //save changes to working time
     let workingTime = document.querySelector(DOMStrings.workingTimeInput).value;
     let startingSaldo = document.querySelector(DOMStrings.workingTimeSaldo).value;
-    AppController.applySettings(workingTime,startingSaldo);
+    //save name
+    let myName = document.querySelector(DOMStrings.settingName).value;
+    AppController.applySettings(workingTime,startingSaldo,myName);
   };
   let reset = function() {
     document.querySelector(DOMStrings.workingTimeInput).value = '07:21';
@@ -415,13 +429,15 @@ return {
         logError('Error: Unsupported feature: navigator.share()');
         return;
       }
-  
+      const userName = `${AppController.getName}
+
+`;
       const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
       const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
       let table = tableTitle;
       table += text_input;
       const title = 'Työajanseuranta';
-      const text = table;
+      const text = userName + table;
       const files = [new File([table], 'loggings.csv', {type : 'text/csv'})];
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
@@ -457,6 +473,7 @@ return {
         modal.style.display = "block";
         AppController.updateStartingSaldo();
         AppController.updateWorkingTimePercent();
+        AppController.updateName();
       }
 
       // When the user clicks on <span> (x), close the modal
