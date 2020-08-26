@@ -116,6 +116,8 @@ let AppController = (function() {
     getName: function() {
       if (data.name && data.name.length > 0) {
         return data.name.trim();
+      } else {
+        return '';
       }
     },
      getTime: function() {
