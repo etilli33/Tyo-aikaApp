@@ -83,7 +83,7 @@ let AppController = (function() {
        data.mostRecent.time = new Date(data.mostRecent.time);
        data.dailySaldo = storedData.dailySaldo;
        data.startingSaldo = storedData.startingSaldo;
-       data.name = storedData.name.trim();
+       data.name = storedData.name;
        //new data structure:
        if (storedData.logs.length > 0) {
        data.logs = storedData.logs;
@@ -114,7 +114,9 @@ let AppController = (function() {
        document.querySelector(DOM.settingName).value = data.name;
     },
     getName: function() {
-      return data.name.trim();
+      if (data.name && data.name.length > 0) {
+        return data.name.trim();
+      }
     },
      getTime: function() {
        //adds zeros to the output, if needed
