@@ -28,7 +28,7 @@ let AppController = (function() {
       type: '',
       time: 0
     },
-    workingTime: 26460000,
+    workingTime: 26100000, //26460000,
     saldo: 0,
     startingSaldo: 0,
     dailySaldo: [], //array of objects with date and saldo pairs
