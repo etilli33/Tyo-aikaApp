@@ -399,13 +399,18 @@ return {
     updateTime: function() {
       let percent = document.querySelector(DOMStrings.workingTimePercent).value;
       let time = document.querySelector(DOMStrings.workingTimeInput);
-      time.value = AppController.toHours((AppController.toMS('7:21') * percent) / 100);
+      time.value = AppController.toHours((AppController.toMS('7:15') * percent) / 100);
 
     },
     updatePercent: function() {
       let percent = document.querySelector(DOMStrings.workingTimePercent);
       let time = document.querySelector(DOMStrings.workingTimeInput).value;
-      percent.value = Math.round((AppController.toMS(time) / AppController.toMS('7:21')) * 100);
+      percent.value = Math.round((AppController.toMS(time) / AppController.toMS('7:15')) * 100);
+    },
+    wrongWorkingTimeAlert: function() {
+      if (AppController.getWorkingTime() > 26100000) {
+        alert('Päivitä työaikasi! Uusi päivittäinen täysi työaika on 7:15. Työajan voit vaihtaa asetuksissa.');
+      }
     },
     formatLogData: function(array) {
       //table.classList.add('hidden');
@@ -635,6 +640,7 @@ let Controller = (function(AppController, UIController) {
       loadData();
       setupEventListeners();
       UIController.formatLogData(AppController.printData());
+      UIController.wrongWorkingTimeAlert();
     }
   }
 
