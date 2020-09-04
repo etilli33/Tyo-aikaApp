@@ -95,6 +95,10 @@ font-weight:600;
 
 }
 
+.working-time-input {
+  width: 80px;
+}
+
 .working-time-label, .working-time-percent, .saldo__type {
 
   clear: both;
@@ -115,6 +119,7 @@ font-weight:600;
 
 .working-time-saldo {
   margin-left: 0;
+  width: 80px;
 }
 
 .button, .tyoaika-button {
