@@ -99,13 +99,13 @@ let AppController = (function() {
       }
      },
      updateStartingSaldo: function() {
-       let DOM;
-       DOM = UIController.getDOMStrings();
-       document.querySelector(DOM.workingTimeSaldo).value = this.toHours(data.startingSaldo);
+       const DOM = UIController.getDOMStrings();
+       data.startingSaldo > 0 ? document.querySelector(DOM.workingTimeSaldoType).value = '+' : document.querySelector(DOM.workingTimeSaldoType).value = '-';
+       document.querySelector(DOM.workingTimeSaldo).value = this.toHours(Math.abs(data.startingSaldo));
+       this.calcSaldo();
      },
      updateWorkingTimePercent: function() {
-       let DOM;
-       DOM = UIController.getDOMStrings();
+       const DOM = UIController.getDOMStrings();
        document.querySelector(DOM.workingTimeInput).value = this.toHours(data.workingTime);
        UIController.updatePercent();
      },
@@ -187,7 +187,7 @@ let AppController = (function() {
      calcSaldo: function() {//should be called only after logout
        let obj, mostRecentOut, firstLoginToday, workingDay, ownSaldo, ownSaldoArray, totalSaldo, saldoToday;
        obj = this.mostRecentDay(0);
-       if (obj.in.length > 0 ) {
+       if (obj && obj.in.length > 0 && obj.in) {
        //get most recent logout.
        mostRecentOut = this.mostRecentOut();
 
@@ -228,7 +228,7 @@ let AppController = (function() {
          totalSaldo += data.logs[i].saldo;
        }
        if (data.startingSaldo) {
-       data.saldo = parseInt(totalSaldo) + parseInt(data.startingSaldo);
+       data.saldo = parseInt(totalSaldo);// + parseInt(data.startingSaldo);
      } else {
        data.saldo = parseInt(totalSaldo);
      }
@@ -249,7 +249,8 @@ let AppController = (function() {
      getSaldo: function() {
        //let obj = this.mostRecentDay(0);
        //return this.toHours(obj.saldo);
-       return this.toHours(data.saldo);
+       //take startingSaldo only here into account
+       return this.toHours(data.saldo + data.startingSaldo);
      },
      setWorkingTime: function(time) {
        data.workingTime = time;
@@ -336,6 +337,7 @@ let UIController = (function() {
     logTable: '.history-caption',
     workingTimeInput: '#working-time-input',
     workingTimePercent: '#working-time-percent',
+    workingTimeSaldoType: '.saldo__type',
     workingTimeSaldo: '#starting-saldo',
     settingsSubmit: '#settings-submit',
     historyTable: '.history',
@@ -345,17 +347,18 @@ let UIController = (function() {
   let saveSettings = function() {
     //save changes to working time
     let workingTime = document.querySelector(DOMStrings.workingTimeInput).value;
-    let startingSaldo = document.querySelector(DOMStrings.workingTimeSaldo).value;
+    let startingSaldo = document.querySelector(DOMStrings.workingTimeSaldoType).value;
+    startingSaldo += document.querySelector(DOMStrings.workingTimeSaldo).value;
     //save name
     let myName = document.querySelector(DOMStrings.settingName).value;
     AppController.applySettings(workingTime,startingSaldo,myName);
   };
   let reset = function() {
-    document.querySelector(DOMStrings.workingTimeInput).value = '07:21';
+    document.querySelector(DOMStrings.workingTimeInput).value = '07:15';
     document.querySelector(DOMStrings.workingTimePercent).value = 100;
   };
 
-      //error function for webshare function
+  //error function for webshare function
       function logText(message, isError) {
         if (isError)
           console.error(message);
@@ -386,6 +389,8 @@ return {
         text = 'Olet kirjautunut sisään.';
       } else if (AppController.mostRecentLogging().type === 'ULOS') {
         text = 'Olet kirjautunut ulos.';
+      } else {
+        text = ''
       }
 
       el.innerText = text + '\nSaldosi on ' + AppController.getSaldo();

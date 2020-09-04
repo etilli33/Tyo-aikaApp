@@ -73,9 +73,16 @@ border-radius: 2px;
 font-weight:600;
 }
 
-.working-time-input, .working-time-percent {
-  border: 2px solid #e7e7e7;
+.container {
+  clear: both;
+  height: 20px;
+  width: 100%;
+  margin-bottom: 10px;
+}
 
+.working-time-input, .working-time-percent, .name, .saldo__type, .working-time-saldo {
+  border: 2px solid #e7e7e7;
+  transition: border 0.3s;
   font-size: 18px;
   color: inherit;
   background-color: #fff;
@@ -83,10 +90,31 @@ font-weight:600;
   font-weight: 300;
   transition: border 0.3s;
   text-align: center;
+  margin: 5px;
+  font-family: sans-serif;
+
+}
+
+.working-time-label, .working-time-percent, .saldo__type {
+
+  clear: both;
 }
 
 .working-time-percent {
   width: 55px;
+}
+
+.name {
+  width: 150px;
+  text-align: left;
+}
+
+.saldo__type {
+  margin-right: 0;
+}
+
+.working-time-saldo {
+  margin-left: 0;
 }
 
 .button, .tyoaika-button {
