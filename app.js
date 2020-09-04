@@ -100,7 +100,7 @@ let AppController = (function() {
      },
      updateStartingSaldo: function() {
        const DOM = UIController.getDOMStrings();
-       data.startingSaldo > 0 ? document.querySelector(DOM.workingTimeSaldoType).value = '+' : document.querySelector(DOM.workingTimeSaldoType).value = '-';
+       data.startingSaldo < 0 ? document.querySelector(DOM.workingTimeSaldoType).value = '-' : document.querySelector(DOM.workingTimeSaldoType).value = '+';
        document.querySelector(DOM.workingTimeSaldo).value = this.toHours(Math.abs(data.startingSaldo));
        this.calcSaldo();
      },
