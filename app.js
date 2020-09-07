@@ -591,9 +591,18 @@ let Controller = (function(AppController, UIController) {
   
   function regSW() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .catch(function(err) {
-          console.info('Service workers are not supported.');
+      navigator.serviceWorker.register('/Tyo-aikaApp/sw.js').then(function(reg) {
+
+        if(reg.installing) {
+          console.log('Service worker installing');
+        } else if(reg.waiting) {
+          console.log('Service worker installed');
+        } else if(reg.active) {
+          console.log('Service worker active');
+        }
+    
+      }).catch(function(err) {
+          console.info('Service workers are not supported. ' + err );
         });
     }
   }
