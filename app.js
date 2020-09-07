@@ -421,8 +421,9 @@ return {
       //table.classList.add('hidden');
       if (array && array.length > 0) {
       let table = document.querySelector(DOMStrings.logTable);
-      let table2 = document.querySelectorAll('td');
-      nodelistForEach(table2, function(el) {return el.remove();})  ;
+      //let table2 = document.querySelectorAll('td');
+      //nodelistForEach(table2, function(el) {return el.remove();})  ;
+      //TODO: group by month and year  
 
       array.forEach(el => {
           let rows = document.createElement('TR');
@@ -432,7 +433,7 @@ return {
             row.appendChild(cell);
             rows.appendChild(row);
           });
-          table.appendChild(rows);
+          table.children[0].appendChild(rows);
       });
       table.classList.remove('hidden');
       }

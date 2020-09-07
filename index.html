@@ -10,13 +10,6 @@
         <link rel="apple-touch-icon" sizes="512x512" href="images/icons-512.png">
         <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
         <link rel="manifest" href="manifest.json">
-        <script type="text/javascript">
-          if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-              navigator.serviceWorker.register('sw.js');
-            });
-          }
-        </script>
     </head>
     <body>
       <header>
@@ -90,6 +83,7 @@
       <!-- Show the history -->
       <div class="history">
         <table class="history-caption hidden">
+          <tbody>
           <tr >
             <th>Päivä</th>
             <th>Sisään</th>
@@ -111,6 +105,7 @@
         </tr>
 
         -->
+        </tbody>
         </table>
       </div>
 
