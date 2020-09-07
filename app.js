@@ -553,15 +553,15 @@ let Controller = (function(AppController, UIController) {
           document.querySelector(DOM.shareButton).classList.add('hidden');
         }
       }
-    };
+  };
 
-    //error function for webshare function
-    function logText(message, isError) {
+  //error function for webshare function
+  function logText(message, isError) {
       if (isError)
         console.error(message);
       else
         console.log(message);
-    }
+  }
 
     function logError(message) {
       logText(message, true);
@@ -584,10 +584,19 @@ let Controller = (function(AppController, UIController) {
       UIController.regLogging('ULOS','OAS')
       UIController.status();
       UIController.formatLogData(AppController.printData());
+    };
+    let setNow = function() {
+      AppController.setTime();
+    };
+  
+  function regSW() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .catch(function(err) {
+          console.info('Service workers are not supported.');
+        });
     }
-  let setNow = function () {
-    AppController.setTime();
-  };
+  }
 
   var loadData = function () {
     // 1. Loca data from local storage
@@ -623,12 +632,6 @@ let Controller = (function(AppController, UIController) {
 
   };
 
-
-
-
-
-
-
   return {
     init: function() {
       console.log('Application has started.')
@@ -646,6 +649,7 @@ let Controller = (function(AppController, UIController) {
       setupEventListeners();
       UIController.formatLogData(AppController.printData());
       UIController.wrongWorkingTimeAlert();
+      regSW();
     }
   }
 
