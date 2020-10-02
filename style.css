@@ -80,7 +80,7 @@ font-weight:600;
   margin-bottom: 10px;
 }
 
-.working-time-input, .working-time-percent, .name, .saldo__type, .working-time-saldo {
+.working-time-input, .working-time-percent, .name, .saldo__type, .working-time-saldo, .correction-input {
   border: 2px solid #e7e7e7;
   transition: border 0.3s;
   font-size: 18px;
@@ -216,4 +216,10 @@ font-weight:600;
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+.warning {
+  padding: 10px;
+  background-color: #ff6666;
+  border-radius: 5px;
 }

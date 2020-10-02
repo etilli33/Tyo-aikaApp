@@ -42,9 +42,9 @@ let AppController = (function() {
     let outTimeArray = [0];
     if (obj.out.find(el => el.type)) {
     let inArray = obj.in.map(el => el.log);
-    console.log(inArray);
+    //console.log(inArray);
     let outArray = obj.out.filter(el => el.type === 'OAS').map(el => el.log);
-    console.log(outArray);
+    //console.log(outArray);
     //find next bigger entry from out in the in-array, then do in-entry - out-entry
 
     for (let i = 0; i < outArray.length; i++) {
@@ -63,6 +63,7 @@ let AppController = (function() {
      storeData: function () {
        if (typeof(Storage) !== 'undefined') {
        localStorage.setItem("data", JSON.stringify(data));
+       console.log('Data stored');
      }
      },
 
@@ -131,6 +132,16 @@ let AppController = (function() {
        minutes = now.getMinutes();
        return hour + ':' + minutes;
      },
+     addEmptyDay: function(dayString) {
+      if (!data.logs.some(el => el.date) || !data.logs.some(el => el.date.getTime() === dayString.getTime())) {
+        let dayObject = {};
+        dayObject.date = dayString;
+        dayObject.in = [];
+        dayObject.out = [];
+        dayObject.saldo = 0;
+        data.logs.push(dayObject)
+      }
+     },
      addLogging: function(type,addition) {
        let now, dayString, item, nowObj;
        now = new Date();
@@ -138,14 +149,8 @@ let AppController = (function() {
        //get today-string
        dayString = calcDayString(now);
          // if day is not there  create it
-         if (!data.logs.some(el => el.date) || !data.logs.some(el => el.date.getTime() === dayString.getTime())) {
-          let dayObject = {};
-          dayObject.date = dayString;
-          dayObject.in = [];
-          dayObject.out = [];
-          dayObject.saldo = 0;
-          data.logs.push(dayObject)
-       }
+        this.addEmptyDay(dayString);
+
        item = data.logs[data.logs.findIndex(el => el.date.getTime() === dayString.getTime())];
 
        if (addition) {
@@ -165,8 +170,90 @@ let AppController = (function() {
          console.log('New ULOS registered.');
        }
      },
-     saveLoggingType: function(string) {
+     processCorrection: function(date, time, type) {
+       let OASObj, item, logTime;
+       const myDate = new Date(date);//does'n yet understand time zones, so needs conversion
+       const dayString = calcDayString(myDate);
+       //If there is no logging at that day, create date object
+       this.addEmptyDay(dayString);
+       //Fill in the logging details
+       item = data.logs[data.logs.findIndex(el => el.date.getTime() === dayString.getTime())];
+       //console.log(item);
+       logTime = new Date(date + 'T' + time);
+       //console.log(`logTime: ${logTime}`);
+       if (type === 'OAS') {
+         OASObj = {log: logTime, type: 'OAS'}
+       } else {
+         OASObj = {log: logTime};
+       }
+       console.log(OASObj);
+       if (type === 'SISÄÄN') {
+         item.in.push(OASObj);
+       } else if (type === 'ULOS' || type === 'OAS') {
+         item.out.push(OASObj);
+       }
+      //Now calculate saldo of that day
+      //works only if there is already OUT
+      let mostRecentOut, firstLoginToday, workingDay, ownSaldo, ownSaldoArray, totalSaldo, saldoToday;
+      
+      //get most recent logout.
+       if (item.out && item.out.length > 0) {
+       for (let i = 0; i < item.out.length; i++ )
+       {  (mostRecentOut > item.out[i].log) ? mostRecentOut : mostRecentOut = item.out[i].log }
+       console.log(mostRecentOut);
+      //calculate smallest amount, i.e. the first event in that array
+      if (item.in && item.in.length > 0) {
+      firstLoginToday  = item.in.sort(function(a,b){return a.log - b.log})[0].log;
+       console.log(firstLoginToday);
+      // calculate difference
+      workingDay = mostRecentOut - firstLoginToday;
+      }
+      //console.log(this.toHours(workingDay));
+       console.log('Working day: ' + this.toHours(workingDay));
+      //take into account also login and logouts in between and their reasons
+      ownSaldoArray = countOwnOutSaldo(item);
+      console.log(ownSaldoArray);
+      //Prepare own saldo, so it is not undefined
+      ownSaldo = 0;
+      const arraySum = arr => arr.reduce((a,b) => a + b, 0);
+      //calc only if own loggings have happened:
+      if (ownSaldoArray) {
+         ownSaldo = arraySum(ownSaldoArray);
+         console.log(this.toHours(ownSaldo));
+         //write it into memory
+         data.logs[data.logs.findIndex(el => el.date.getTime() === item.date.getTime())].ownSaldo = ownSaldo;
+         //remove sum of ownOut from workingDay
+         //workingDay = workingDay - ownSaldo;
+         //
+       }
+       //compare to workingTime
+       //TODO: normal working time has been 7:21 before 1598821200000
+       //TODO: take into account also working time %
+      saldoToday = 0;
+      if (workingDay || !isNaN(workingDay)) {
+        saldoToday = (workingDay - data.workingTime) - ownSaldo;
+      }
+      //write saldoToday into memory
+      data.logs[data.logs.findIndex(el => el.date.getTime() === item.date.getTime())].saldo = saldoToday;
+      
+      //take old saldo and add/remove new saldo
+      totalSaldo = 0;
+      //totalSaldo should be sum of all daily saldos - startingSaldo
+      for (i in data.logs) {
+        totalSaldo += data.logs[i].saldo;
+      }
+      if (data.startingSaldo) {
+      data.saldo = parseInt(totalSaldo);// + parseInt(data.startingSaldo);
+    } else {
+      data.saldo = parseInt(totalSaldo);
+    }
+      console.log("Koko Saldo: " + totalSaldo);
+      console.log("Koko saldo miinus aloitussaldo: " + (totalSaldo + data.startingSaldo));    
+    }
 
+    },
+     saveLoggingType: function(string) {
+      //for future use
      },
      mostRecentLogging: function() {
        return data.mostRecent;
@@ -227,23 +314,12 @@ let AppController = (function() {
        for (i in data.logs) {
          totalSaldo += data.logs[i].saldo;
        }
-       if (data.startingSaldo) {
-       data.saldo = parseInt(totalSaldo);// + parseInt(data.startingSaldo);
-     } else {
+       //starting saldo gets used only in getSaldo function
        data.saldo = parseInt(totalSaldo);
-     }
+
 
        console.log("Koko Saldo: " + totalSaldo);
        console.log("Koko saldo miinus aloitussaldo: " + (totalSaldo + data.startingSaldo));
-
-       /*
-       //get second last day:
-       if (data.logs.length > 1) {
-       let yesterday = this.mostRecentDay(1)
-       totalSaldo = saldoToday + yesterday.saldo;
-     } else {totalSaldo = saldoToday;}
-       data.saldo = totalSaldo;
-       */
      }
      },
      getSaldo: function() {
@@ -330,6 +406,7 @@ let UIController = (function() {
     buttonOAOUT: '#OAU',
     buttonOut: '#ulos',
     buttonSubmit: '#settings-submit',
+    buttonSaveCorrection: '#save_correction',
     modal: '#modal-settings',
     modalButton: '#open-settings',
     modalClose: 'close',
@@ -342,7 +419,12 @@ let UIController = (function() {
     settingsSubmit: '#settings-submit',
     historyTable: '.history',
     shareButton: '.share-button',
-    settingName: '.name'
+    settingName: '.name',
+    correctionDate: '#correction-date',
+    correctionTime: '#correction-time',
+    correctionIn: '#radio-sis',
+    correctionOut: '#radio-ul',
+    correctionOAS: '#radio-oas'
   };
   let saveSettings = function() {
     //save changes to working time
@@ -369,6 +451,26 @@ let UIController = (function() {
       function logError(message) {
         logText(message, true);
       }
+
+  const saveCorrection = function() {
+    //Get needed input fields
+    const date = document.querySelector(DOMStrings.correctionDate).value;
+    const time = document.querySelector(DOMStrings.correctionTime).value;
+    const in_correction = document.querySelector(DOMStrings.correctionIn);
+    const out_correction = document.querySelector(DOMStrings.correctionOut);
+    const OAS_correction = document.querySelector(DOMStrings.correctionOAS);
+    const type = function() {
+      if (in_correction.checked) { return in_correction.value;}
+      else if (out_correction.checked) { return out_correction.value;}
+      else if (OAS_correction.checked) { return OAS_correction.value;}
+    }
+    //call function from the App-module with inputs as arguments
+    AppController.processCorrection(date, time, type());
+    if (date && time && (in_correction || out_correction || OAS_correction)) {
+      return true;
+    }
+  };   
+
 return {
     getDOMStrings: function() {
       return DOMStrings;
@@ -421,8 +523,10 @@ return {
       //table.classList.add('hidden');
       if (array && array.length > 0) {
       let table = document.querySelector(DOMStrings.logTable);
-      //let table2 = document.querySelectorAll('td');
-      //nodelistForEach(table2, function(el) {return el.remove();})  ;
+      let tableRows = document.querySelectorAll('td');
+      if (tableRows && tableRows.length > 0) {
+      nodelistForEach(tableRows, function(el) {return el.remove();})  ;
+      }
       //TODO: group by month and year  
 
       array.forEach(el => {
@@ -446,7 +550,7 @@ return {
       }
       const userName = `${AppController.getName()}
 
-`;
+                `;
       const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
       const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
       let table = tableTitle;
@@ -483,6 +587,9 @@ return {
       // Get Tallenna button
       let close = document.querySelector(DOMStrings.buttonSubmit);
 
+      //Logging correction save button
+      const correctionButton = document.querySelector(DOMStrings.buttonSaveCorrection);
+
       // When the user clicks on the button, open the modal
       btn.onclick = function() {
         modal.style.display = "block";
@@ -508,8 +615,25 @@ return {
         saveSettings();
         AppController.storeData();
         modal.style.display = 'none';
-
+        return false; //prevents page from reloading
       }
+
+      //Save changed logging and close modal
+      correctionButton.onclick = function() {
+        const correction = saveCorrection();
+        if (correction) {
+        modal.style.display = 'none';
+        } else {
+          const p = document.createElement('P');
+          p.classList.add('warning');
+          p.innerText = 'Täytä kaikki kentät!';
+          correctionButton.parentNode.appendChild(p);
+        }
+        AppController.storeData();
+        UIController.formatLogData(AppController.printData());
+        return false;
+      }
+
     }
   }
 
@@ -615,22 +739,7 @@ let Controller = (function(AppController, UIController) {
     if (storedData) {
       // 2. insert the saved data into local storage
       AppController.updateData(storedData);
-
-      // 3. create log ins
-      //storedData.in.forEach(function (cur) {
-        //var newIncItem = budgetCtrl.addItem("inc", cur.description, cur.value);
-        //UIController.addListItem(newIncItem, "inc");
-      //});
-
-      // 4. Creating  log outs
-      //storedData.out.forEach(function (cur) {
-        //var newExpItem = budgetCtrl.addItem("exp", cur.description, cur.value);
-        //UIController.addListItem(newExpItem, "exp");
-      //});
-
-
-      // 5. Display the status
-      //budget = budgetCtrl.getBudget();
+      // 3. update status line
       UIController.status();
 
 

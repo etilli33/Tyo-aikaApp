@@ -59,21 +59,22 @@
         </form>
         </div>
 
-        <div class="logging-correction hidden">
+        <div class="logging-correction">
           <h3>Korjaa kirjaus</h3>
           <form>
           <label for="correction-date">Päivämäärä</label>
-          <input type="date"  required id="correction-date" ><br>
+          <input type="date" class="correction-input"  required id="correction-date" ><br>
           <label for="correction-time">Aika</label>
-          <input type="time"  required id="correction-time" >
+          <input type="time" class="correction-input" required id="correction-time" >
           <p for="correction-type">Tyyppi</p>
           <input type="radio" name="type" required id="radio-sis" value="SISÄÄN">
           <label for="radio-sis">SISÄÄN</label><br>
           <input type="radio" name="type" required id="radio-ul" value="ULOS">
           <label for="radio-ul">ULOS</label><br>
-          <input type="radio" name="type" required id="radio-oas" value="Oma asia ulos">
+          <input type="radio" name="type" required id="radio-oas" value="OAS">
           <label for="radio-oas">Oma asia ulos</label><br>
-          <input type="submit" class="button" name="" value="Tallenna">
+          <p id="test1"></p>
+          <input type="submit" class="button" name="" id="save_correction" value="Tallenna">
           </form>
         </div>
         </div>
