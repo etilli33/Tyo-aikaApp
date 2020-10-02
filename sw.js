@@ -39,3 +39,20 @@ self.addEventListener('install', function(event) {
 
   //to have a new service worker registered, let it store a new cache eg. 'vs2'
   //it will be activated when no page is needing the old sw anymore.
+  //To remove old caches:
+
+  /*
+self.addEventListener('activate', (event) => {
+  var cacheKeeplist = ['v2'];
+
+  event.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => {
+        if (cacheKeeplist.indexOf(key) === -1) {
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
+});
+  */
