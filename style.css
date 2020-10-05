@@ -133,7 +133,8 @@ font-weight:600;
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 12px 18px;
+  font-size: 20px;
 
 }
 
@@ -222,4 +223,9 @@ font-weight:600;
   padding: 10px;
   background-color: #ff6666;
   border-radius: 5px;
+}
+
+/* Logging corrections */
+.logging-correction {
+  display: none;
 }

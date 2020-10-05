@@ -424,7 +424,9 @@ let UIController = (function() {
     correctionTime: '#correction-time',
     correctionIn: '#radio-sis',
     correctionOut: '#radio-ul',
-    correctionOAS: '#radio-oas'
+    correctionOAS: '#radio-oas',
+    correctionShowButton: '#show-correction',
+    correctionDIV: '.logging-correction'
   };
   let saveSettings = function() {
     //save changes to working time
@@ -587,8 +589,14 @@ return {
       // Get Tallenna button
       let close = document.querySelector(DOMStrings.buttonSubmit);
 
+      // Get the div for logging corrections
+      const loggingCorrectionDIV = document.querySelector(DOMStrings.correctionDIV);
+
       //Logging correction save button
       const correctionButton = document.querySelector(DOMStrings.buttonSaveCorrection);
+
+      //Loggin correction show button
+      const correctionShowButton = document.querySelector(DOMStrings.correctionShowButton);
 
       // When the user clicks on the button, open the modal
       btn.onclick = function() {
@@ -616,6 +624,12 @@ return {
         AppController.storeData();
         modal.style.display = 'none';
         return false; //prevents page from reloading
+      }
+
+      //Show the logging changing part
+      correctionShowButton.onclick = function() {
+        correctionShowButton.style.display = 'none';
+        loggingCorrectionDIV.style.display = 'block';
       }
 
       //Save changed logging and close modal
