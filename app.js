@@ -622,6 +622,7 @@ return {
       close.onclick = function() {
         saveSettings();
         AppController.storeData();
+        status();
         modal.style.display = 'none';
         return false; //prevents page from reloading
       }
