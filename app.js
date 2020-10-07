@@ -374,8 +374,8 @@ let AppController = (function() {
            (dailyInDate > 0) ? dailyInDate.toLocaleTimeString() : '---',
            (dailyOutDate > 0) ? dailyOutDate.toLocaleTimeString() : '---',
            (!isNaN(workingDay)) ? this.toHours(workingDay).replace(':', '.') : '---',//työpäivän pituus
-           this.toHours(myData[i].saldo)replace(':', '.'),
-           (myData[i].ownSaldo) ? this.toHours(myData[i].ownSaldo)replace(':', '.') : '---'
+           this.toHours(myData[i].saldo).replace(':', '.'),
+           (myData[i].ownSaldo) ? this.toHours(myData[i].ownSaldo).replace(':', '.') : '---'
             ];
          printOut.push(printLine);
        }
