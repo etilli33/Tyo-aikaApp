@@ -338,10 +338,10 @@ let AppController = (function() {
        let timeArray = time.split(':');
        let hours = timeArray[0];
        let minutes = timeArray[1];
-       if (hours > 0 ) {
-       return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
-       } else if (hours <= 0) {
+        if (hours[0] === '-') {
          return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000 * -1);
+       } else {
+        return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
        }
      },
      toHours: function(time) {
