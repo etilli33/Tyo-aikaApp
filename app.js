@@ -192,6 +192,7 @@ let AppController = (function() {
          OASObj = {log: logTime};
        }
        if (debugging) {
+         console.log('Oma aika objekti: ');
          console.log(OASObj);
        }
        if (type === 'SISÄÄN') {
@@ -208,12 +209,14 @@ let AppController = (function() {
        for (let i = 0; i < item.out.length; i++ )
        {  (mostRecentOut > item.out[i].log) ? mostRecentOut : mostRecentOut = item.out[i].log }
        if (debugging) {
+         console.log('Most recent out: ');
          console.log(mostRecentOut);
        }
       //calculate smallest amount, i.e. the first event in that array
       if (item.in && item.in.length > 0) {
       firstLoginToday  = item.in.sort(function(a,b){return a.log - b.log})[0].log;
       if (debugging) {
+        console.log('First login today: ');
         console.log(firstLoginToday);
       }
       // calculate difference
@@ -230,11 +233,12 @@ let AppController = (function() {
       //calc only if own loggings have happened:
       if (ownSaldoArray) {
         if (debugging) {
+          console.log('Oma aika array: ');
           console.log(ownSaldoArray);
         }
          ownSaldo = arraySum(ownSaldoArray);
          if (debugging) {
-           console.log(this.toHours(ownSaldo));
+           console.log('Oma aika: ' + this.toHours(ownSaldo));
          }
          //write it into memory
          data.logs[data.logs.findIndex(el => el.date.getTime() === item.date.getTime())].ownSaldo = ownSaldo;
@@ -295,7 +299,7 @@ let AppController = (function() {
        if (ownSaldoArray) {
           ownSaldo = arraySum(ownSaldoArray);
           if (debugging) {
-            console.log(this.toHours(ownSaldo));
+            console.log('Oma aika : ' + this.toHours(ownSaldo));
           }
           //write it into memory
           data.logs[data.logs.findIndex(el => el.date.getTime() === obj.date.getTime())].ownSaldo = ownSaldo;
@@ -321,10 +325,10 @@ let AppController = (function() {
        //starting saldo gets used only in getSaldo function
        data.saldo = parseInt(totalSaldo);
        */
-       if (debugging) {
-          console.log("Koko Saldo: " + totalSaldo);
-          console.log("Koko saldo plus aloitussaldo: " + (totalSaldo + data.startingSaldo));
-       }
+      // if (debugging) {
+          //console.log("Koko Saldo: " + totalSaldo);
+          //console.log("Koko saldo plus aloitussaldo: " + (totalSaldo + data.startingSaldo));
+      // }
      }
      },
      getSaldo: function() {
@@ -379,6 +383,7 @@ let AppController = (function() {
        const timeFormator = new Intl.DateTimeFormat(lang, options);
        const myData = data.logs.sort(function(a, b){return b.date - a.date});
        if (debugging) {
+         console.log('Data: ');
          console.log(myData);
          window.myData = myData;
        }
@@ -410,6 +415,7 @@ let AppController = (function() {
         var myDataByMonth = Object.keys(groups).map(function(k) {return groups[k]; });//.sort((a,b) => b - a); //sort descending
 
         if (debugging) {
+          console.log('Data sorted by month: ');
           console.log(myDataByMonth);
           window.myDataByMonth = myDataByMonth;
         }
@@ -440,6 +446,7 @@ let AppController = (function() {
         }
 
         if (debugging) {
+          console.log('Taulukko-data: ');
           console.log(printOut);
         }
         /*
