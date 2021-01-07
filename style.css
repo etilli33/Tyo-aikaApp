@@ -154,25 +154,33 @@ font-weight:600;
   overflow-x: auto;
 }
 
-.history-caption{
+.history-table{
   border-collapse: collapse;
   width: 100%;
 }
 
-.history-caption td, .history-caption th {
+.history-table td, .history-tablen th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-.history-caption tr:nth-child(even){background-color: #f2f2f2;}
+.history-table tr:nth-child(even){background-color: #f2f2f2;}
 
-.history-caption tr:hover {background-color: #ddd;}
+.history-table tr:hover {background-color: #ddd;}
 
 .history-caption th {
   padding-top:6px;
   padding-bottom: 6px;
   text-align: center;
   background-color: #e67300;
+  color: white;
+}
+
+.history-sub-caption {
+  padding-top:6px;
+  padding-bottom: 6px;
+  text-align: center;
+  background-color: #5c5956;
   color: white;
 }
 

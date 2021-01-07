@@ -5,7 +5,8 @@ if (navigator.storage && navigator.storage.persist) {
   console.log(`Persisted storage granted: ${isPersisted}`);
 }
 */
-
+//Debugging flag to switch on console printing
+const debugging = false;
 
 let AppController = (function() {
   let date = new Date();
@@ -34,6 +35,10 @@ let AppController = (function() {
     dailySaldo: [], //array of objects with date and saldo pairs
     name: ''
   };
+
+  if (debugging) {
+    window.data = data;
+  }
 
   let calcDayString = function(now) {
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -103,7 +108,7 @@ let AppController = (function() {
        const DOM = UIController.getDOMStrings();
        data.startingSaldo < 0 ? document.querySelector(DOM.workingTimeSaldoType).value = '-' : document.querySelector(DOM.workingTimeSaldoType).value = '+';
        document.querySelector(DOM.workingTimeSaldo).value = this.toHours(Math.abs(data.startingSaldo));
-       this.calcSaldo();
+       //this.calcSaldo();
      },
      updateWorkingTimePercent: function() {
        const DOM = UIController.getDOMStrings();
@@ -186,7 +191,9 @@ let AppController = (function() {
        } else {
          OASObj = {log: logTime};
        }
-       console.log(OASObj);
+       if (debugging) {
+         console.log(OASObj);
+       }
        if (type === 'SISÄÄN') {
          item.in.push(OASObj);
        } else if (type === 'ULOS' || type === 'OAS') {
@@ -195,31 +202,40 @@ let AppController = (function() {
       //Now calculate saldo of that day
       //works only if there is already OUT
       let mostRecentOut, firstLoginToday, workingDay, ownSaldo, ownSaldoArray, totalSaldo, saldoToday;
-      
+
       //get most recent logout.
        if (item.out && item.out.length > 0) {
        for (let i = 0; i < item.out.length; i++ )
        {  (mostRecentOut > item.out[i].log) ? mostRecentOut : mostRecentOut = item.out[i].log }
-       console.log(mostRecentOut);
+       if (debugging) {
+         console.log(mostRecentOut);
+       }
       //calculate smallest amount, i.e. the first event in that array
       if (item.in && item.in.length > 0) {
       firstLoginToday  = item.in.sort(function(a,b){return a.log - b.log})[0].log;
-       console.log(firstLoginToday);
+      if (debugging) {
+        console.log(firstLoginToday);
+      }
       // calculate difference
       workingDay = mostRecentOut - firstLoginToday;
       }
-      //console.log(this.toHours(workingDay));
-       console.log('Working day: ' + this.toHours(workingDay));
+      if (debugging) {
+        console.log('Working day: ' + this.toHours(workingDay));
+      }
       //take into account also login and logouts in between and their reasons
       ownSaldoArray = countOwnOutSaldo(item);
-      console.log(ownSaldoArray);
       //Prepare own saldo, so it is not undefined
       ownSaldo = 0;
       const arraySum = arr => arr.reduce((a,b) => a + b, 0);
       //calc only if own loggings have happened:
       if (ownSaldoArray) {
+        if (debugging) {
+          console.log(ownSaldoArray);
+        }
          ownSaldo = arraySum(ownSaldoArray);
-         console.log(this.toHours(ownSaldo));
+         if (debugging) {
+           console.log(this.toHours(ownSaldo));
+         }
          //write it into memory
          data.logs[data.logs.findIndex(el => el.date.getTime() === item.date.getTime())].ownSaldo = ownSaldo;
          //remove sum of ownOut from workingDay
@@ -227,28 +243,12 @@ let AppController = (function() {
          //
        }
        //compare to workingTime
-       //TODO: normal working time has been 7:21 before 1598821200000
-       //TODO: take into account also working time %
       saldoToday = 0;
       if (workingDay || !isNaN(workingDay)) {
         saldoToday = (workingDay - data.workingTime) - ownSaldo;
       }
       //write saldoToday into memory
       data.logs[data.logs.findIndex(el => el.date.getTime() === item.date.getTime())].saldo = saldoToday;
-      
-      //take old saldo and add/remove new saldo
-      totalSaldo = 0;
-      //totalSaldo should be sum of all daily saldos - startingSaldo
-      for (i in data.logs) {
-        totalSaldo += data.logs[i].saldo;
-      }
-      if (data.startingSaldo) {
-      data.saldo = parseInt(totalSaldo);// + parseInt(data.startingSaldo);
-    } else {
-      data.saldo = parseInt(totalSaldo);
-    }
-      console.log("Koko Saldo: " + totalSaldo);
-      console.log("Koko saldo miinus aloitussaldo: " + (totalSaldo + data.startingSaldo));    
     }
 
     },
@@ -294,7 +294,9 @@ let AppController = (function() {
        //calc only if own loggings have happened:
        if (ownSaldoArray) {
           ownSaldo = arraySum(ownSaldoArray);
-          console.log(this.toHours(ownSaldo));
+          if (debugging) {
+            console.log(this.toHours(ownSaldo));
+          }
           //write it into memory
           data.logs[data.logs.findIndex(el => el.date.getTime() === obj.date.getTime())].ownSaldo = ownSaldo;
           //remove sum of ownOut from workingDay
@@ -308,6 +310,8 @@ let AppController = (function() {
        }
        //write saldoToday into memory
        data.logs[data.logs.findIndex(el => el.date.getTime() === obj.date.getTime())].saldo = saldoToday;
+
+       /*
        //take old saldo and add/remove new saldo
        totalSaldo = 0;
        //totalSaldo should be sum of all daily saldos - startingSaldo
@@ -316,17 +320,20 @@ let AppController = (function() {
        }
        //starting saldo gets used only in getSaldo function
        data.saldo = parseInt(totalSaldo);
-
-
-       console.log("Koko Saldo: " + totalSaldo);
-       console.log("Koko saldo miinus aloitussaldo: " + (totalSaldo + data.startingSaldo));
+       */
+       if (debugging) {
+          console.log("Koko Saldo: " + totalSaldo);
+          console.log("Koko saldo plus aloitussaldo: " + (totalSaldo + data.startingSaldo));
+       }
      }
      },
      getSaldo: function() {
-       //let obj = this.mostRecentDay(0);
-       //return this.toHours(obj.saldo);
+       let totalSaldo = 0;
+       for (i in data.logs) {
+         totalSaldo += data.logs[i].saldo;
+       }
        //take startingSaldo only here into account
-       return this.toHours(data.saldo + data.startingSaldo);
+       return this.toHours(totalSaldo + data.startingSaldo);
      },
      setWorkingTime: function(time) {
        data.workingTime = time;
@@ -338,11 +345,11 @@ let AppController = (function() {
        let timeArray = time.split(':');
        let hours = timeArray[0];
        let minutes = timeArray[1];
-        if (hours.length > 2 && hours[0] === '-') {
-         return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000 * -1);
-       } else {
-        return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
-       }
+       if (hours.length > 2 && hours[0] === '-') {
+        return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000 * -1);
+      } else {
+       return (hours * 60 * 60 * 1000) + (minutes * 60 * 1000);
+      }
      },
      toHours: function(time) {
        let hours = parseInt(time / 1000 / 60 / 60);
@@ -358,27 +365,102 @@ let AppController = (function() {
          return (Math.abs(minutes) < 10) ? hours.toString() + ':' + '0' + Math.abs(minutes) : hours.toString() + ':' + Math.abs(minutes);
      },
      printData: function() {
-       let myData, printOut;
-       myData = data.logs.sort(function(a, b){return b.date - a.date});
+       let printOut;
+       //get locale of browser
+       const lang = navigator.language;
+       //options for timeFormator
+       const options = {
+        //timeStyle: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+       }
+       //formator for dates
+       const formator = new Intl.DateTimeFormat(lang);
+       const timeFormator = new Intl.DateTimeFormat(lang, options);
+       const myData = data.logs.sort(function(a, b){return b.date - a.date});
+       if (debugging) {
+         console.log(myData);
+         window.myData = myData;
+       }
+       //format secondary headings in table
+       // input is date with the first day of the month
+       const formatHeading = (date) => {
+              var string = new Intl.DateTimeFormat(lang, {year: 'numeric', month: 'long'}).format(date);
+              return string[0].toUpperCase() + string.substring(1);
+       };
+       //format days in human readable manner
+       const dayFormator = (date) => {
+         const now = new Date();
+         const daysPassed = Math.floor((now - date) / 1000 / 60 / 60 / 24);
+        if (daysPassed < 1 ) return `Tänään`;
+        else if (daysPassed === 1 ) return `Eilen`;
+        else if (daysPassed < 5 ) {
+          const weekday = new Intl.DateTimeFormat(lang, {weekday: 'long'}).format(date);
+          return  weekday[0].toUpperCase() + weekday.substring(1);
+        } else return formator.format(date);
+       };
+
        printOut = [];
        if (myData && myData.length > 0) {
+        var groups = myData.reduce(function (r, o) {
+          var m = new Date(`${o.date.getFullYear()}-${o.date.getMonth() + 1}`);
+          (r[m]) ? r[m].data.push(o) : r[m] = {month: String(m), data: [o]};
+          return r;
+        }, {});
+        var myDataByMonth = Object.keys(groups).map(function(k) {return groups[k]; });//.sort((a,b) => b - a); //sort descending
+
+        if (debugging) {
+          console.log(myDataByMonth);
+          window.myDataByMonth = myDataByMonth;
+        }
+        for (i in myDataByMonth) {
+          const curMonth = {
+            month: formatHeading(new Date(myDataByMonth[i].month)),
+            days: []
+          };
+          printOut.push(curMonth);
+          for (a in myDataByMonth[i].data) {
+            let dailyInDate, dailyIn, dailyOutDate, dailyOut, printLine, workingDay;
+            dailyIn = (myDataByMonth[i].data[a].in.length > 0) ? myDataByMonth[i].data[a].in.sort((a,b) => a.log - b.log) : [];
+            dailyInDate = (dailyIn.length > 0) ? new Date(dailyIn[0].log) : -1;
+            dailyOut = (myDataByMonth[i].data[a].out.length > 0) ? myDataByMonth[i].data[a].out.sort((a,b) => b.log - a.log) : [];
+            dailyOutDate = (dailyOut.length > 0 ) ? new Date(dailyOut[0].log) : -1;
+            workingDay = (dailyOutDate > 0 && dailyInDate > 0) ? dailyOutDate - dailyInDate : '---';
+            printLine = [
+              //formator.format(myDataByMonth[i].data[a].date),
+              dayFormator(myDataByMonth[i].data[a].date),
+              (dailyInDate > 0) ? timeFormator.format(dailyInDate) : '---',
+              (dailyOutDate > 0) ? timeFormator.format(dailyOutDate) : '---',
+              (!isNaN(workingDay)) ? this.toHours(workingDay).replace(':', '.') : '---',//työpäivän pituus
+              this.toHours(myDataByMonth[i].data[a].saldo).replace(':', '.'),
+              (myDataByMonth[i].data[a].ownSaldo) ? this.toHours(myDataByMonth[i].data[a].ownSaldo).replace(':', '.') : '---'
+            ];
+            curMonth.days.push(printLine);
+          }
+        }
+
+        if (debugging) {
+          console.log(printOut);
+        }
+        /*
        for (let i = 0; i < myData.length; i++) {
          let dailyInDate, dailyIn, dailyOutDate, dailyOut, printLine, workingDay;
          dailyIn = (myData[i].in.length > 0) ? myData[i].in.sort(function(a,b){return a.log -b.log}) : [];
          dailyInDate = (dailyIn.length > 0) ? new Date(dailyIn[0].log) : -1;
-         dailyOut = (myData[i].out.length > 0) ? myData[i].out.sort(function(a,b){return b.log -a.log}) : []; //[myData[i].out.length -1].log
+         dailyOut = (myData[i].out.length > 0) ? myData[i].out.sort(function(a,b){return b.log -a.log}) : [];
          dailyOutDate = (dailyOut.length > 0 ) ? new Date(dailyOut[0].log) : -1;
          workingDay = (dailyOutDate > 0 && dailyInDate > 0) ? dailyOutDate - dailyInDate : '---';
          printLine = [
-           `${myData[i].date.getDate()}.${myData[i].date.getMonth() + 1}.${myData[i].date.getFullYear()}`,
-           (dailyInDate > 0) ? dailyInDate.toLocaleTimeString() : '---',
-           (dailyOutDate > 0) ? dailyOutDate.toLocaleTimeString() : '---',
+           formator.format(myData[i].date),
+           (dailyInDate > 0) ? timeFormator.format(dailyInDate) : '---',
+           (dailyOutDate > 0) ? timeFormator.format(dailyOutDate) : '---',
            (!isNaN(workingDay)) ? this.toHours(workingDay).replace(':', '.') : '---',//työpäivän pituus
            this.toHours(myData[i].saldo).replace(':', '.'),
            (myData[i].ownSaldo) ? this.toHours(myData[i].ownSaldo).replace(':', '.') : '---'
             ];
          printOut.push(printLine);
        }
+       */
        return printOut;
       }
      },
@@ -415,7 +497,8 @@ let UIController = (function() {
     modalButton: '#open-settings',
     modalClose: 'close',
     status: 'status',
-    logTable: '.history-caption',
+    logTable: '.history-table',
+    logTableSubHeading: '.history-sub-caption',
     workingTimeInput: '#working-time-input',
     workingTimePercent: '#working-time-percent',
     workingTimeSaldoType: '.saldo__type',
@@ -429,14 +512,15 @@ let UIController = (function() {
     correctionIn: '#radio-sis',
     correctionOut: '#radio-ul',
     correctionOAS: '#radio-oas',
-    correctionShowButton: '#show-correction',
+    correctionShow: '#show-correction',
     correctionDIV: '.logging-correction'
   };
   let saveSettings = function() {
     //save changes to working time
-    let workingTime = document.querySelector(DOMStrings.workingTimeInput).value;
+    const workingTime = document.querySelector(DOMStrings.workingTimeInput).value;
     let startingSaldo = document.querySelector(DOMStrings.workingTimeSaldoType).value;
-    startingSaldo += document.querySelector(DOMStrings.workingTimeSaldo).value;
+    const startingSaldoNumber = document.querySelector(DOMStrings.workingTimeSaldo).value
+    startingSaldo += startingSaldoNumber ? startingSaldoNumber : '00:00';
     //save name
     let myName = document.querySelector(DOMStrings.settingName).value;
     AppController.applySettings(workingTime,startingSaldo,myName);
@@ -453,7 +537,7 @@ let UIController = (function() {
         else
           console.log(message);
       }
-  
+
       function logError(message) {
         logText(message, true);
       }
@@ -475,7 +559,7 @@ let UIController = (function() {
     if (date && time && (in_correction || out_correction || OAS_correction)) {
       return true;
     }
-  };   
+  };
 
 return {
     getDOMStrings: function() {
@@ -525,26 +609,39 @@ return {
         alert('Päivitä työaikasi! Uusi päivittäinen täysi työaika on 7:15. Työajan voit vaihtaa asetuksissa.');
       }
     },
-    formatLogData: function(array) {
-      //table.classList.add('hidden');
-      if (array && array.length > 0) {
-      let table = document.querySelector(DOMStrings.logTable);
-      let tableRows = document.querySelectorAll('td');
-      if (tableRows && tableRows.length > 0) {
-      nodelistForEach(tableRows, function(el) {return el.remove();})  ;
-      }
-      //TODO: group by month and year  
+    formatLogData: function(tableData) {
+      //prepare table in document
+      if (tableData ) {
+      const table = document.querySelector(DOMStrings.logTable);
+      const tableRows = document.querySelectorAll('td');
+      if (tableRows && tableRows.length > 0) nodelistForEach(tableRows, function(el) {return el.parentNode.remove();});
+      const tableSubHeadings = table.querySelectorAll(DOMStrings.logTableSubHeading);
+      if (tableSubHeadings && tableSubHeadings.length > 0) nodelistForEach(tableSubHeadings, function(el) {return el.parentNode.remove();});
+      //Fill table
+      for (i in tableData) {
+        //Generate monthly headings
+          const headingRow = document.createElement('TR');
+          const heading = document.createElement('TH');
+          heading.setAttribute('colspan', 6);
+          heading.classList.add('history-sub-caption');
+          const headingCell = document.createTextNode(tableData[i].month);
+          heading.appendChild(headingCell);
+          headingRow.appendChild(heading);
+          table.children[0].appendChild(headingRow);
+        //Generate daily data
+          const array = tableData[i].days;
+          array.forEach(el => {
+              let rows = document.createElement('TR');
+              el.forEach(innerEl => {
+                let row = document.createElement('TD');
+                let cell = document.createTextNode(innerEl);
+                row.appendChild(cell);
+                rows.appendChild(row);
+              });
+              table.children[0].appendChild(rows);
+          })
 
-      array.forEach(el => {
-          let rows = document.createElement('TR');
-          el.forEach(innerEl => {
-            let row = document.createElement('TD');
-            let cell = document.createTextNode(innerEl);
-            row.appendChild(cell);
-            rows.appendChild(row);
-          });
-          table.children[0].appendChild(rows);
-      });
+      };
       table.classList.remove('hidden');
       }
     },
@@ -554,13 +651,21 @@ return {
         logError('Error: Unsupported feature: navigator.share()');
         return;
       }
-      const userName = `${AppController.getName()}
+      const userName = `${AppController.getName()};
 
                 `;
-      const text_input = AppController.printData().join('\n').replace(/,/g,'\t');
+      const text_input = AppController.printData();
       const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
       let table = tableTitle;
-      table += text_input;
+      const dataTable = [];
+      for (a in text_input)
+      {
+        dataTable.push(text_input[a].month);
+        for (i in text_input[a].days) {
+          dataTable.push(text_input[a].days[i]);
+        }
+      }
+      table += dataTable.join('\n').replace(/,/g,'\t');
       const title = 'Työajanseuranta';
       const text = userName + table;
       const files = [new File([table], 'loggings.csv', {type : 'text/csv'})];
@@ -600,7 +705,7 @@ return {
       const correctionButton = document.querySelector(DOMStrings.buttonSaveCorrection);
 
       //Loggin correction show button
-      const correctionShowButton = document.querySelector(DOMStrings.correctionShowButton);
+      const correctionShowButton = document.querySelector(DOMStrings.correctionShow);
 
       // When the user clicks on the button, open the modal
       btn.onclick = function() {
@@ -632,9 +737,11 @@ return {
       }
 
       //Show the logging changing part
+      if (correctionShowButton) {
       correctionShowButton.onclick = function() {
         correctionShowButton.style.display = 'none';
         loggingCorrectionDIV.style.display = 'block';
+        }
       }
 
       //Save changed logging and close modal
@@ -648,8 +755,9 @@ return {
           p.innerText = 'Täytä kaikki kentät!';
           correctionButton.parentNode.appendChild(p);
         }
-        AppController.storeData();
+        UIController.status();
         UIController.formatLogData(AppController.printData());
+        AppController.storeData();
         return false;
       }
 
@@ -732,7 +840,7 @@ let Controller = (function(AppController, UIController) {
     let setNow = function() {
       AppController.setTime();
     };
-  
+
   function regSW() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/Tyo-aikaApp/sw.js').then(function(reg) {
@@ -744,7 +852,7 @@ let Controller = (function(AppController, UIController) {
         } else if(reg.active) {
           console.log('Service worker active');
         }
-    
+
       }).catch(function(err) {
           console.info('Service workers are not supported. ' + err );
         });
