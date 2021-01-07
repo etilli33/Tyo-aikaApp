@@ -479,7 +479,8 @@ let AppController = (function() {
      },
      testing: function() {
        console.log(data);
-     }
+     },
+     version: 1.20210107
   }
 })();
 
@@ -591,8 +592,11 @@ return {
       } else {
         text = ''
       }
-
+      if (debugging) {
+      el.innerText = text + '\nSaldosi on ' + AppController.getSaldo() + `\nVersio ${AppController.version}`;
+    } else {
       el.innerText = text + '\nSaldosi on ' + AppController.getSaldo();
+    }
     },
     updateSettings: function() {
       //get time from DOM
