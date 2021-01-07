@@ -409,7 +409,7 @@ let AppController = (function() {
        if (myData && myData.length > 0) {
         var groups = myData.reduce(function (r, o) {
           var m = new Date(`${o.date.getFullYear()}-${o.date.getMonth() + 1}`);
-          (r[m]) ? r[m].data.push(o) : r[m] = {month: String(m), data: [o]};
+          (r[m]) ? r[m].data.push(o) : r[m] = {month: new Date(m), data: [o]};
           return r;
         }, {});
         var myDataByMonth = Object.keys(groups).map(function(k) {return groups[k]; });//.sort((a,b) => b - a); //sort descending
