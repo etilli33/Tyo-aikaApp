@@ -946,6 +946,7 @@ let Controller = (function(AppController, UIController) {
         rewireLoggingToElement(
           () => document.getElementById("log"),
           () => document.getElementById("log-container"), true);
+        console.log(window.navigator.platform);
       }
     }
   }
