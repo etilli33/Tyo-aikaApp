@@ -408,7 +408,7 @@ let AppController = (function() {
        printOut = [];
        if (myData && myData.length > 0) {
         var groups = myData.reduce(function (r, o) {
-          var m = new Date(`${o.date.getFullYear()}-${o.date.getMonth() + 1}-01`);
+          var m = `${o.date.getFullYear()}-0${o.date.getMonth() + 1}-01`;
           (r[m]) ? r[m].data.push(o) : r[m] = {month: new Date(m), data: [o]};
           return r;
         }, {});
