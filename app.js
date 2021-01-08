@@ -683,12 +683,15 @@ return {
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
+      //The next asks for non production canShare() -method, which is not working in Safari.
+      /*
       if (files && files.length > 0) {
         if (!navigator.canShare || !navigator.canShare({files})) {
           logError('Error: Unsupported feature: navigator.canShare()');
-          return;
+          //return;
         }
       }
+      */
       try {
         await navigator.share({title: title, text: text, files: files});
         logText('Successfully sent share');
