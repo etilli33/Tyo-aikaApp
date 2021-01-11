@@ -467,7 +467,7 @@ let AppController = (function() {
        const timeFormator = new Intl.DateTimeFormat(lang, options);
        const myData = data.logs.sort(function(a, b){return b.date - a.date});
        if (debugging) {
-         console.log('Data: ');
+         console.log('Shared data: ');
          console.log(myData);
          window.myData = myData;
        }
