@@ -16,8 +16,11 @@ self.addEventListener('fetch', function(evt) {
 function precache() {
   return caches.open(CACHE).then(function (cache) {
     return cache.addAll([
-      './controlled.html',
-      './asset'
+      '/Tyo-aikaApp/',
+      '/Tyo-aikaApp/app.js',
+      '/Tyo-aikaApp/index.html',
+      '/Tyo-aikaApp/style.css',
+      '/Tyo-aikaApp/images/icons-192.png'
     ]);
   });
 }
