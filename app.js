@@ -499,7 +499,7 @@ let AppController = (function() {
      testing: function() {
        console.log(data);
      },
-     version: 1.20210107
+     version: 1.20210114
   }
 })();
 
