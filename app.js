@@ -408,7 +408,12 @@ let AppController = (function() {
        printOut = [];
        if (myData && myData.length > 0) {
         var groups = myData.reduce(function (r, o) {
-          var m = `${o.date.getFullYear()}-0${o.date.getMonth() + 1}-01`;
+          //Check if month is two digit
+          if (o.date.getMonth() >8 ) {
+            var m = `${o.date.getFullYear()}-${o.date.getMonth() + 1}-01`;
+          } else {
+            var m = `${o.date.getFullYear()}-0${o.date.getMonth() + 1}-01`;
+          }
           (r[m]) ? r[m].data.push(o) : r[m] = {month: new Date(m), data: [o]};
           return r;
         }, {});
