@@ -403,8 +403,13 @@ let AppController = (function() {
        printOut = [];
        if (myData && myData.length > 0) {
         var groups = myData.reduce(function (r, o) {
-          var m = new Date(`${o.date.getFullYear()}-${o.date.getMonth() + 1}`);
-          (r[m]) ? r[m].data.push(o) : r[m] = {month: String(m), data: [o]};
+          //Check if month is two digit
+          if (o.date.getMonth() >8 ) {
+            var m = `${o.date.getFullYear()}-${o.date.getMonth() + 1}-01`;
+          } else {
+            var m = `${o.date.getFullYear()}-0${o.date.getMonth() + 1}-01`;
+          }
+          (r[m]) ? r[m].data.push(o) : r[m] = {month: new Date(m), data: [o]};
           return r;
         }, {});
         var myDataByMonth = Object.keys(groups).map(function(k) {return groups[k]; });//.sort((a,b) => b - a); //sort descending
@@ -442,28 +447,47 @@ let AppController = (function() {
         if (debugging) {
           console.log(printOut);
         }
-        /*
-       for (let i = 0; i < myData.length; i++) {
-         let dailyInDate, dailyIn, dailyOutDate, dailyOut, printLine, workingDay;
-         dailyIn = (myData[i].in.length > 0) ? myData[i].in.sort(function(a,b){return a.log -b.log}) : [];
-         dailyInDate = (dailyIn.length > 0) ? new Date(dailyIn[0].log) : -1;
-         dailyOut = (myData[i].out.length > 0) ? myData[i].out.sort(function(a,b){return b.log -a.log}) : [];
-         dailyOutDate = (dailyOut.length > 0 ) ? new Date(dailyOut[0].log) : -1;
-         workingDay = (dailyOutDate > 0 && dailyInDate > 0) ? dailyOutDate - dailyInDate : '---';
-         printLine = [
-           formator.format(myData[i].date),
-           (dailyInDate > 0) ? timeFormator.format(dailyInDate) : '---',
-           (dailyOutDate > 0) ? timeFormator.format(dailyOutDate) : '---',
-           (!isNaN(workingDay)) ? this.toHours(workingDay).replace(':', '.') : '---',//työpäivän pituus
-           this.toHours(myData[i].saldo).replace(':', '.'),
-           (myData[i].ownSaldo) ? this.toHours(myData[i].ownSaldo).replace(':', '.') : '---'
-            ];
-         printOut.push(printLine);
-       }
-       */
-       return printOut;
+        return printOut;
       }
      },
+    shareData: function() {
+        const printOut = [];
+        //get browser language
+        const lang = navigator.language;
+         //options for timeFormator
+         const options = {
+          //timeStyle: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+         }
+         //formator for dates
+         const formator = new Intl.DateTimeFormat(lang);
+         const timeFormator = new Intl.DateTimeFormat(lang, options);
+         const myData = data.logs.sort(function(a, b){return b.date - a.date});
+         if (debugging) {
+           console.log('Data: ');
+           console.log(myData);
+           window.myData = myData;
+         }
+        for (let i = 0; i < myData.length; i++) {
+          let dailyInDate, dailyIn, dailyOutDate, dailyOut, printLine, workingDay;
+          dailyIn = (myData[i].in.length > 0) ? myData[i].in.sort(function(a,b){return a.log -b.log}) : [];
+          dailyInDate = (dailyIn.length > 0) ? new Date(dailyIn[0].log) : -1;
+          dailyOut = (myData[i].out.length > 0) ? myData[i].out.sort(function(a,b){return b.log -a.log}) : [];
+          dailyOutDate = (dailyOut.length > 0 ) ? new Date(dailyOut[0].log) : -1;
+          workingDay = (dailyOutDate > 0 && dailyInDate > 0) ? dailyOutDate - dailyInDate : '---';
+          printLine = [
+            formator.format(myData[i].date),
+            (dailyInDate > 0) ? timeFormator.format(dailyInDate) : '---',
+            (dailyOutDate > 0) ? timeFormator.format(dailyOutDate) : '---',
+            (!isNaN(workingDay)) ? this.toHours(workingDay).replace(':', '.') : '---',//työpäivän pituus
+            this.toHours(myData[i].saldo).replace(':', '.'),
+            (myData[i].ownSaldo) ? this.toHours(myData[i].ownSaldo).replace(':', '.') : '---'
+             ];
+          printOut.push(printLine);
+        }
+        return printOut;
+       },
      applySettings: function(workingTime, startingSaldo, name) {
        data.workingTime = this.toMS(workingTime);
        data.startingSaldo = this.toMS(startingSaldo);
@@ -651,33 +675,28 @@ return {
         logError('Error: Unsupported feature: navigator.share()');
         return;
       }
-      const userName = `${AppController.getName()};
+      const userName = `${AppController.getName()}
 
-                `;
-      const text_input = AppController.printData();
+      `;
+      const text_input = AppController.shareData();
       const tableTitle = 'Päivä\t Sisään\t Ulos\t Työpäivä\t Saldo\t Oma aika\n';
       let table = tableTitle;
-      const dataTable = [];
-      for (a in text_input)
-      {
-        dataTable.push(text_input[a].month);
-        for (i in text_input[a].days) {
-          dataTable.push(text_input[a].days[i]);
-        }
-      }
-      table += dataTable.join('\n').replace(/,/g,'\t');
+      table += text_input.join('\n').replace(/,/g,'\t');
       const title = 'Työajanseuranta';
       const text = userName + table;
       const files = [new File([table], 'loggings.csv', {type : 'text/csv'})];
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
+      //The next asks for non production canShare() -method, which is not working in Safari.
+      /*
       if (files && files.length > 0) {
         if (!navigator.canShare || !navigator.canShare({files})) {
           logError('Error: Unsupported feature: navigator.canShare()');
-          return;
+          //return;
         }
       }
+      */
       try {
         await navigator.share({title: title, text: text, files: files});
         logText('Successfully sent share');
