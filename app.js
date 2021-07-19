@@ -695,7 +695,8 @@ return {
       table += text_input.join('\n').replace(/,/g,'\t');
       const title = 'Työajanseuranta';
       const text = userName + table;
-      const files = [new File([table], 'Kirjaukset.csv', {type : 'text/csv'}), new File([JSON.stringify(AppController.loadData())], 'Kirjaukset.json', {type: 'text/plain'})];
+      const files = [new File([table], 'Kirjaukset.csv', {type : 'text/csv'}), new File([JSON.stringify(AppController.getStoredData())], 'Kirjaukset.json', {type: 'text/plain'})];
+      if (debugging) console.log(files);
       //const text = text_input.disabled ? undefined : text_input.innerText;
       //const url = url_input.disabled ? undefined : url_input.value;
       //const files = file_input.disabled ? undefined : file_input.files;
