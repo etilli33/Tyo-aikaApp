@@ -504,7 +504,7 @@ let AppController = (function() {
      testing: function() {
        console.log(data);
      },
-     version: '1.20210114a'
+     version: '1.20210718a'
   }
 })();
 
