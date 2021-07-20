@@ -586,11 +586,15 @@ let UIController = (function() {
       else if (out_correction.checked) { return out_correction.value;}
       else if (OAS_correction.checked) { return OAS_correction.value;}
     }
+
+
     //call function from the App-module with inputs as arguments
-    AppController.processCorrection(date, time, type());
-    if (date && time && (in_correction || out_correction || OAS_correction)) {
-      return true;
-    }
+    if (date || time || type() ) {
+      AppController.processCorrection(date, time, type());
+      if (date && time && (in_correction || out_correction || OAS_correction)) {
+        return true;
+      }
+    } else return false;
   };
 
 return {
