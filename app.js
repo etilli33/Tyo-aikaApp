@@ -561,6 +561,12 @@ let UIController = (function() {
     document.querySelector(DOMStrings.workingTimeInput).value = '07:15';
     document.querySelector(DOMStrings.workingTimePercent).value = 100;
   };
+  const cleanUpModal = function() {
+    document.querySelector(DOMStrings.correctionShow).style.display = 'block';
+    document.querySelector(DOMStrings.correctionDIV).style.display = 'none';
+    //remove all warning classes
+    document.querySelectorAll('.warning').forEach(el => el.remove());
+  };
 
   //error function for webshare function
       function logText(message, isError) {
@@ -757,12 +763,14 @@ return {
       span.onclick = function() {
         modal.style.display = "none";
         reset();
+        cleanUpModal();
       }
 
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function(event) {
         if (event.target == modal) {
           modal.style.display = "none";
+          cleanUpModal();
         }
       }
       //Close modal also with the Tallenna button
@@ -771,6 +779,7 @@ return {
         AppController.storeData();
         UIController.status();
         modal.style.display = 'none';
+        cleanUpModal();
         return false; //prevents page from reloading
       }
 
@@ -787,15 +796,16 @@ return {
         const correction = saveCorrection();
         if (correction) {
         modal.style.display = 'none';
+        cleanUpModal();
+        UIController.status();
+        UIController.formatLogData(AppController.printData());
+        AppController.storeData();
         } else {
           const p = document.createElement('P');
           p.classList.add('warning');
           p.innerText = 'Täytä kaikki kentät!';
           correctionButton.parentNode.appendChild(p);
         }
-        UIController.status();
-        UIController.formatLogData(AppController.printData());
-        AppController.storeData();
         return false;
       }
 
