@@ -146,6 +146,11 @@ font-weight:600;
   margin-bottom: 10px;
 }
 
+a {
+  color: white;
+  text-decoration: none;
+}
+
 /* Table settings */
 .history {
   /*max-width: 400px;*/

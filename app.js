@@ -695,7 +695,7 @@ return {
       table += text_input.join('\n').replace(/,/g,'\t');
       const title = 'Työajanseuranta';
       const text = userName + table;
-      const files = [new File([table], 'Kirjaukset.csv', {type : 'text/csv'}), new File([JSON.stringify(AppController.getStoredData())], 'Kirjaukset.json', {type: 'text/plain'})];
+      const files = [new File([table], 'Kirjaukset.csv', {type : 'text/csv'})];
       if (debugging) {
         console.log(files);
         console.log(text);
@@ -795,6 +795,21 @@ return {
         return false;
       }
 
+    },
+    downloadLink: function(element, fileUrl, fileName) {
+      const a = document.createElement("a");
+      a.target ="blank";
+      a.href=fileUrl;
+      a.download = fileName;
+      const node = document.createTextNode(`Lataa oma data`);
+      a.appendChild(node);
+      element.appendChild(a);
+    },
+    downloadData: function ()  {
+      const data = JSON.stringify(AppController.getStoredData());
+      const blob = new Blob([data], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      return url;
     }
   }
 
@@ -839,6 +854,10 @@ let Controller = (function(AppController, UIController) {
           document.querySelector(DOM.shareButton).classList.add('hidden');
         }
       }
+
+      //Download link
+      const downloadDiv = document.querySelector('#download-data-link');
+      UIController.downloadLink(downloadDiv, UIController.downloadData(), 'Kirjaukset.json');
   };
 
   //error function for webshare function
