@@ -598,6 +598,7 @@ let UIController = (function() {
     document.querySelector(DOMStrings.correctionDIV).style.display = 'none';
     //remove all warning classes
     document.querySelectorAll('.warning').forEach(el => el.remove());
+    document.querySelector(DOMStrings.importInput).value = '';
   };
 
   //error function for webshare function
@@ -853,8 +854,10 @@ return {
       element.appendChild(a);
     },
     downloadData: function ()  {
-      const data = JSON.stringify(AppController.getStoredData());
-      const blob = new Blob([data], {type: 'application/json'});
+      AppController.storeData();
+      const ownData = JSON.stringify(AppController.getStoredData());//TODO: Reads for some reason not the input done in the current session!
+      console.log(ownData)
+      const blob = new Blob([ownData], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
       return url;
     },
@@ -873,7 +876,7 @@ return {
       input.addEventListener('input', function() {
         if (input.value.length > 0) {
           console.log(input.value)
-          cleanUpModal();
+          document.querySelectorAll('.warning').forEach(el => el.remove());
           input.classList.add('success');//TODO: gets added even when no file selected
         }
       });
