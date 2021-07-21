@@ -878,7 +878,7 @@ return {
         if (input.value.length > 0) {
           console.log(input.value)
           document.querySelectorAll('.warning').forEach(el => el.remove());
-          input.classList.add('success');//TODO: gets added even when no file selected
+          input.classList.add('success');
         } else {
           input.classList.remove('success');
         }
