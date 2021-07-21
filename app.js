@@ -599,6 +599,7 @@ let UIController = (function() {
     //remove all warning classes
     document.querySelectorAll('.warning').forEach(el => el.remove());
     document.querySelector(DOMStrings.importInput).value = '';
+    document.querySelector(DOMStrings.importInput).classList.remove('success');
   };
 
   //error function for webshare function
@@ -878,6 +879,8 @@ return {
           console.log(input.value)
           document.querySelectorAll('.warning').forEach(el => el.remove());
           input.classList.add('success');//TODO: gets added even when no file selected
+        } else {
+          input.classList.remove('success');
         }
       });
     },
