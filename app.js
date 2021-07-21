@@ -502,7 +502,37 @@ let AppController = (function() {
        this.storeData();
      },
      testing: function() {
-       console.log(data);
+       if(debugging) {
+          console.log(data);
+       }
+      return;
+     },
+     importData: async function(input) {
+      const reader = new FileReader();
+       reader.onload = function(e) {
+        const contents = reader.result;
+        const newData = JSON.parse(contents);
+        console.log(newData);
+          //check if new data is integer)
+          if (newData.logs && newData.workingTime && newData.name  && newData.mostRecent && newData.logs.length > 0 ) {
+            const conf = window.confirm('Haluatko todella poistaa vanhat kirjaustiedot ja tallentaa uudet?')
+              if (conf) {
+                //localStorage.setItem('oldData', JSON.stringify(data));
+                localStorage.setItem('data', JSON.stringify(newData));
+                UIController.hideModal();
+                // 1. Load data from local storage
+                //var storedData = AppController.getStoredData();
+                //if (storedData) {
+                // 2. insert the saved data into local storage
+                AppController.updateData(newData);
+                // 3. update interface
+                UIController.status();
+                UIController.formatLogData(AppController.printData());
+                //}
+              }
+            }
+      }
+      reader.readAsText(input);
      },
      version: '1.20210719a'
   }
@@ -545,7 +575,9 @@ let UIController = (function() {
     correctionOut: '#radio-ul',
     correctionOAS: '#radio-oas',
     correctionShow: '#show-correction',
-    correctionDIV: '.logging-correction'
+    correctionDIV: '.logging-correction',
+    importInput: '#import-data-file',
+    importButton: '#import-data-submit'
   };
   let saveSettings = function() {
     //save changes to working time
@@ -801,10 +833,11 @@ return {
         UIController.formatLogData(AppController.printData());
         AppController.storeData();
         } else {
-          const p = document.createElement('P');
-          p.classList.add('warning');
-          p.innerText = 'Täytä kaikki kentät!';
-          correctionButton.parentNode.appendChild(p);
+          //const p = document.createElement('P');
+          //p.classList.add('warning');
+          //p.innerText = 'Täytä kaikki kentät!';
+          //correctionButton.parentNode.appendChild(p);
+          UIController.issueWarning('Täytä kaikki kentät!',correctionButton);
         }
         return false;
       }
@@ -824,7 +857,44 @@ return {
       const blob = new Blob([data], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
       return url;
-    }
+    },
+    hideModal: function() {
+      const modal = document.querySelector(DOMStrings.modal);
+      modal.style.display = 'none';
+    },
+    issueWarning: function(text,element) {
+          const p = document.createElement('P');
+          p.classList.add('warning');
+          p.innerText = text;
+          element.parentNode.appendChild(p);
+    },
+    importVerification: function() {
+      const input = document.querySelector(DOMStrings.importInput);
+      input.addEventListener('input', function() {
+        if (input.value.length > 0) {
+          console.log(input.value)
+          cleanUpModal();
+          input.classList.add('success');//TODO: gets added even when no file selected
+        }
+      });
+    },
+    prepareImport: function() {
+      const button = document.querySelector(DOMStrings.importButton);
+
+      const inputFile = document.querySelector(DOMStrings.importInput).files[0];
+      //clean up, if file selected:
+
+
+        if (!inputFile) {
+          UIController.issueWarning('Valitse tiedosto!',button);
+          return false;
+        }
+
+        AppController.importData(inputFile);
+
+
+        }
+
   }
 
 })();
@@ -872,6 +942,12 @@ let Controller = (function(AppController, UIController) {
       //Download link
       const downloadDiv = document.querySelector('#download-data-link');
       UIController.downloadLink(downloadDiv, UIController.downloadData(), 'Kirjaukset.json');
+
+      //ImportButton
+      const button = document.querySelector(DOM.importButton);
+      button.addEventListener('click', UIController.prepareImport);
+      UIController.importVerification()
+
   };
 
   //error function for webshare function
@@ -927,7 +1003,7 @@ let Controller = (function(AppController, UIController) {
   }
 
   var loadData = function () {
-    // 1. Loca data from local storage
+    // 1. Load data from local storage
     var storedData = AppController.getStoredData();
 
     if (storedData) {

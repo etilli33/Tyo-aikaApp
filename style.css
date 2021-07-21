@@ -238,6 +238,14 @@ a {
   border-radius: 5px;
 }
 
+.success {
+  background-color: lightgreen;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  border-radius: 5px;
+}
+
 /* Logging corrections */
 .logging-correction {
   display: none;
