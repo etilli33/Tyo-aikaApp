@@ -850,14 +850,18 @@ return {
       a.target ="blank";
       a.href=fileUrl;
       a.download = fileName;
-      const node = document.createTextNode(`Lataa oma data`);
-      a.appendChild(node);
-      element.appendChild(a);
+      element.insertAdjacentElement('afterend',a);
+      a.click();
+      a.remove();
+      UIController.hideModal();
+    },
+    dowloadButton: function() {
+      const downloadDiv =  document.querySelector('#download-data-link');
+      UIController.downloadLink(downloadDiv, UIController.downloadData(), 'Kirjaukset.json');
+      console.log('Data has been downloaded')
     },
     downloadData: function ()  {
-      AppController.storeData();
-      const ownData = JSON.stringify(AppController.getStoredData());//TODO: Reads for some reason not the input done in the current session!
-      console.log(ownData)
+      const ownData = JSON.stringify(AppController.getStoredData());
       const blob = new Blob([ownData], {type: 'application/json'});
       const url = URL.createObjectURL(blob);
       return url;
@@ -872,7 +876,7 @@ return {
           p.innerText = text;
           element.parentNode.appendChild(p);
     },
-    importVerification: function() {
+    inputVerification: function() {
       const input = document.querySelector(DOMStrings.importInput);
       input.addEventListener('input', function() {
         if (input.value.length > 0) {
@@ -947,12 +951,13 @@ let Controller = (function(AppController, UIController) {
 
       //Download link
       const downloadDiv = document.querySelector('#download-data-link');
-      UIController.downloadLink(downloadDiv, UIController.downloadData(), 'Kirjaukset.json');
+      downloadDiv.addEventListener('click', UIController.dowloadButton);
+
 
       //ImportButton
       const button = document.querySelector(DOM.importButton);
       button.addEventListener('click', UIController.prepareImport);
-      UIController.importVerification()
+      UIController.inputVerification()
 
   };
 
