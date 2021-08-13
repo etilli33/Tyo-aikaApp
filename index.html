@@ -1,104 +1,226 @@
 <!DOCTYPE html>
 <html lang="fi">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600" rel="stylesheet" type="text/css">
-        <link type="text/css" rel="stylesheet" href="style.css">
-        <title>Työaikaseuranta</title>
-        <link rel="apple-touch-icon" sizes="512x512" href="images/icons-512.png">
-        <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
-        <link rel="manifest" href="manifest.json">
-    </head>
-    <body>
-      <header>
-        <h1>Työaikaseuranta</h1>
-      </header>
-      <div class="wrapper">
-        <button class="share-button">
-          <ion-icon name="share-social"></ion-icon>
-        </button>
-        <div class="wrapper-inner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link type="text/css" rel="stylesheet" href="style.css" />
+    <title>Työaikaseuranta</title>
+    <link rel="apple-touch-icon" sizes="512x512" href="images/icons-512.png" />
+    <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="manifest" href="manifest.json" />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule=""
+      src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.js"
+    ></script>
+  </head>
+  <body>
+    <header>
+      <h1>Työaikaseuranta</h1>
+    </header>
+    <div class="wrapper">
+      <button class="share-button">
+        <ion-icon name="share-social"></ion-icon>
+      </button>
+      <div class="wrapper-inner">
+        <div class="time-chooser">
+          <label for="tyoaika">Aika</label>
+          <div type="time" name="tyoaika" class="tyoaika" id="tyoaika"></div>
+          <br />
 
-      <div class="time-chooser">
-        <label for="tyoaika">Aika</label>
-        <div type="time" name="tyoaika" class="tyoaika" id="tyoaika"></div><br>
-
-        <input type="button" id="sis" value="SISÄÄN" class="tyoaika-button">
-        <input type="button" id="ulos" name="" value="ULOS" class="tyoaika-button"><br>
-        <input type="button" id="OAU" name="Oma asia ulos" value="Oma asia ulos" class="tyoaika-button">
-      </div>
-      <div>
-        <p id="status"></p>
-      </div>
-      <div class="settings-chooser">
-        <div class="button" id="open-settings">Asetukset</div>
-      </div>
-      <!-- settings modaalimuodossa -->
-      <div id="modal-settings" class="settings">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-        <div class="work-parameters">
-        <form>
-        <label for="name">Nimi</label>
-        <input type="text" name="Nimi" id="name" class="name" placeholder="Kirjoita nimesi"><br>
-        <label for="working-time-input">Työaika/pv</label>
-        <input type="time" name="Työaika" id="working-time-input" class="working-time-input" value="07:21"><br>
-        <label for="working-time-percent">Työaika-%</label>
-        <input type="number" id="working-time-percent" class="working-time-percent" name="Työaika-%" value="100" step="1" min="1" max="100"><br>
-        <div class=container>
-        <label for="starting-saldo" class="working-time-label">Alkusaldo</label>
-        <select class="saldo__type">
-          <option value="+" selected>+</option>
-          <option value="-">-</option>
-        </select>
-        <input type="time"   id="starting-saldo" class="working-time-saldo" value="00:00"><br>
+          <input type="button" id="sis" value="SISÄÄN" class="tyoaika-button" />
+          <input
+            type="button"
+            id="ulos"
+            name=""
+            value="ULOS"
+            class="tyoaika-button"
+          /><br />
+          <input
+            type="button"
+            id="OAU"
+            name="Oma asia ulos"
+            value="Oma asia ulos"
+            class="tyoaika-button"
+          />
         </div>
-        <input type="button" class="button" name="Tallenna" value="Tallenna" id="settings-submit">
-        </form>
+        <div>
+          <p id="status"></p>
         </div>
-
-        <div class="logging-correction-button">
-          <button class="button" id="show-correction">Korjaa kirjaus</button>
+        <div class="settings-chooser">
+          <div class="button" id="open-settings">Asetukset</div>
         </div>
+        <!-- settings modaalimuodossa -->
+        <div id="modal-settings" class="settings">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="work-parameters">
+              <form>
+                <label for="name">Nimi</label>
+                <input
+                  type="text"
+                  name="Nimi"
+                  id="name"
+                  class="name"
+                  placeholder="Kirjoita nimesi"
+                /><br />
+                <label for="working-time-input">Työaika/pv</label>
+                <input
+                  type="time"
+                  name="Työaika"
+                  id="working-time-input"
+                  class="working-time-input"
+                  value="07:21"
+                /><br />
+                <label for="working-time-percent">Työaika-%</label>
+                <input
+                  type="number"
+                  id="working-time-percent"
+                  class="working-time-percent"
+                  name="Työaika-%"
+                  value="100"
+                  step="1"
+                  min="1"
+                  max="100"
+                /><br />
+                <div class="container">
+                  <label for="starting-saldo" class="working-time-label"
+                    >Alkusaldo</label
+                  >
+                  <select class="saldo__type">
+                    <option value="+" selected>+</option>
+                    <option value="-">-</option>
+                  </select>
+                  <input
+                    type="time"
+                    id="starting-saldo"
+                    class="working-time-saldo"
+                    value="00:00"
+                  /><br />
+                </div>
+                <input
+                  type="button"
+                  class="button"
+                  name="Tallenna"
+                  value="Tallenna"
+                  id="settings-submit"
+                />
+              </form>
+            </div>
 
-        <div class="logging-correction">
-          <h3>Korjaa kirjaus</h3>
-          <form>
-          <label for="correction-date">Päivämäärä</label>
-          <input type="date" class="correction-input"  required id="correction-date" ><br>
-          <label for="correction-time">Aika</label>
-          <input type="time" class="correction-input" required id="correction-time" >
-          <p for="correction-type">Tyyppi</p>
-          <input type="radio" name="type" required id="radio-sis" value="SISÄÄN">
-          <label for="radio-sis">SISÄÄN</label><br>
-          <input type="radio" name="type" required id="radio-ul" value="ULOS">
-          <label for="radio-ul">ULOS</label><br>
-          <input type="radio" name="type" required id="radio-oas" value="OAS">
-          <label for="radio-oas">Oma asia ulos</label><br>
-          <p id="test1"></p>
-          <input type="button" class="button" name="" id="save_correction" value="Tallenna">
-          </form>
+            <div class="logging-correction-button">
+              <button class="button" id="show-correction">
+                Korjaa kirjaus
+              </button>
+            </div>
+
+            <div class="logging-correction">
+              <h3>Korjaa kirjaus</h3>
+              <form>
+                <label for="correction-date">Päivämäärä</label>
+                <input
+                  type="date"
+                  class="correction-input"
+                  required
+                  id="correction-date"
+                /><br />
+                <label for="correction-time">Aika</label>
+                <input
+                  type="time"
+                  class="correction-input"
+                  required
+                  id="correction-time"
+                />
+                <p for="correction-type">Tyyppi</p>
+                <input
+                  type="radio"
+                  name="type"
+                  required
+                  id="radio-sis"
+                  value="SISÄÄN"
+                />
+                <label for="radio-sis">SISÄÄN</label><br />
+                <input
+                  type="radio"
+                  name="type"
+                  required
+                  id="radio-ul"
+                  value="ULOS"
+                />
+                <label for="radio-ul">ULOS</label><br />
+                <input
+                  type="radio"
+                  name="type"
+                  required
+                  id="radio-oas"
+                  value="OAS"
+                />
+                <label for="radio-oas">Oma asia ulos</label><br />
+                <p id="test1"></p>
+                <input
+                  type="button"
+                  class="button"
+                  name=""
+                  id="save_correction"
+                  value="Tallenna"
+                />
+              </form>
+            </div>
+            <!-- link to download own data -->
+            <div
+              type="button"
+              class="button download-data"
+              id="download-data-link"
+              value="Lataa oma data"
+            >
+              Lataa oma data
+            </div>
+            <!-- Choose file to import data -->
+            <div class="import">
+              <form>
+                <input
+                  type="button"
+                  class="button"
+                  id="import-data-submit"
+                  value="Tuo oma data tiedostosta"
+                />
+                <input
+                  type="file"
+                  required
+                  id="import-data-file"
+                  accept=".json"
+                />
+              </form>
+            </div>
+          </div>
         </div>
-        </div>
-      </div>
-      <!-- end modal -->
+        <!-- end modal -->
 
-      <!-- Show the history -->
-      <div class="history">
-        <table class="history-table hidden">
-          <tbody>
-          <tr class="history-caption" >
-            <th>Päivä</th>
-            <th>Sisään</th>
-            <th>Ulos</th>
-            <th>Työpäivä</th>
-            <th>Saldo</th>
-            <th>Oma aika</th>
-          </tr>
+        <!-- Show the history -->
+        <div class="history">
+          <table class="history-table hidden">
+            <tbody>
+              <tr class="history-caption">
+                <th>Päivä</th>
+                <th>Sisään</th>
+                <th>Ulos</th>
+                <th>Työpäivä</th>
+                <th>Saldo</th>
+                <th>Oma aika</th>
+              </tr>
 
-
-        <!--
+              <!--
         <tr>
           <td>1.1.1970</td>
           <td>08.12</td>
@@ -109,13 +231,11 @@
         </tr>
 
         -->
-        </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
-
     </div>
-  </div>
-      <script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
-      <script src="app.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

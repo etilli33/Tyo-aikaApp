@@ -1,11 +1,11 @@
 body {
-    color: #555;
-    font-family: Open Sans;
-    font-size: 16px;
-    position: relative;
-    height: 100vh;
-    font-weight: 400;
-    margin: 0;
+  color: #555;
+  font-family: Open Sans;
+  font-size: 16px;
+  position: relative;
+  height: 100vh;
+  font-weight: 400;
+  margin: 0;
 }
 
 header {
@@ -25,7 +25,7 @@ h1 {
   align-content: center;
   background-color: #f0f0f5;
   max-width: 600px;
-  margin:auto;
+  margin: auto;
 }
 
 .share-button {
@@ -48,6 +48,14 @@ h1 {
   margin-bottom: -5px;
 }
 
+ion-icon {
+  font-size: 30px;
+  text-align: center;
+  box-sizing: border-box;
+  margin-left: -3px;
+  margin-bottom: -5px;
+}
+
 .wrapper-inner {
   margin: 0 5%;
   padding-bottom: 40px;
@@ -58,19 +66,19 @@ h1 {
 }
 
 .tyoaika {
-border: 2px solid #e7e7e7;
-margin: 10px 0px;
-font-size: 18px;
-color: inherit;
-background-color: #fff;
-margin-right: 10px;
-font-weight: 300;
-transition: border 0.3s;
-text-align: center;
-display: inline-block;
-padding: 5px;
-border-radius: 2px;
-font-weight:600;
+  border: 2px solid #e7e7e7;
+  margin: 10px 0px;
+  font-size: 18px;
+  color: inherit;
+  background-color: #fff;
+  margin-right: 10px;
+  font-weight: 300;
+  transition: border 0.3s;
+  text-align: center;
+  display: inline-block;
+  padding: 5px;
+  border-radius: 2px;
+  font-weight: 600;
 }
 
 .container {
@@ -80,7 +88,12 @@ font-weight:600;
   margin-bottom: 10px;
 }
 
-.working-time-input, .working-time-percent, .name, .saldo__type, .working-time-saldo, .correction-input {
+.working-time-input,
+.working-time-percent,
+.name,
+.saldo__type,
+.working-time-saldo,
+.correction-input {
   border: 2px solid #e7e7e7;
   transition: border 0.3s;
   font-size: 18px;
@@ -92,15 +105,15 @@ font-weight:600;
   text-align: center;
   margin: 5px;
   font-family: sans-serif;
-
 }
 
 .working-time-input {
   width: 80px;
 }
 
-.working-time-label, .working-time-percent, .saldo__type {
-
+.working-time-label,
+.working-time-percent,
+.saldo__type {
   clear: both;
 }
 
@@ -122,7 +135,8 @@ font-weight:600;
   width: 80px;
 }
 
-.button, .tyoaika-button {
+.button,
+.tyoaika-button {
   background: #e67300;
   border-radius: 4px;
   border: 0;
@@ -135,7 +149,6 @@ font-weight:600;
   cursor: pointer;
   padding: 12px 18px;
   font-size: 20px;
-
 }
 
 .button {
@@ -146,6 +159,11 @@ font-weight:600;
   margin-bottom: 10px;
 }
 
+a {
+  color: white;
+  text-decoration: none;
+}
+
 /* Table settings */
 .history {
   /*max-width: 400px;*/
@@ -154,22 +172,27 @@ font-weight:600;
   overflow-x: auto;
 }
 
-.history-table{
+.history-table {
   border-collapse: collapse;
   width: 100%;
 }
 
-.history-table td, .history-tablen th {
+.history-table td,
+.history-tablen th {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-.history-table tr:nth-child(even){background-color: #f2f2f2;}
+.history-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
-.history-table tr:hover {background-color: #ddd;}
+.history-table tr:hover {
+  background-color: #ddd;
+}
 
 .history-caption th {
-  padding-top:6px;
+  padding-top: 6px;
   padding-bottom: 6px;
   text-align: center;
   background-color: #e67300;
@@ -177,7 +200,7 @@ font-weight:600;
 }
 
 .history-sub-caption {
-  padding-top:6px;
+  padding-top: 6px;
   padding-bottom: 6px;
   text-align: center;
   background-color: #5c5956;
@@ -194,11 +217,9 @@ font-weight:600;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-
-
 
 /* Modal Content/Box */
 .modal-content {
@@ -207,7 +228,7 @@ font-weight:600;
   /*margin: 5% 15%;*/ /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 250px;/* Could be more or less, depending on screen size */
+  width: 250px; /* Could be more or less, depending on screen size */
   /*max-width: 100%;*/
   border-radius: 8px;
 }
@@ -230,6 +251,14 @@ font-weight:600;
 .warning {
   padding: 10px;
   background-color: #ff6666;
+  border-radius: 5px;
+}
+
+.success {
+  background-color: lightgreen;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 5px;
   border-radius: 5px;
 }
 
