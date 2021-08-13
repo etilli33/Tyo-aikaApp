@@ -770,8 +770,13 @@ let UIController = (function () {
       } else {
         text = '';
       }
-
-      el.innerText = text + '\nSaldosi on ' + AppController.getSaldo();
+      const saldosi = '\nSaldosi on ' + AppController.getSaldo();
+      const versio = `\nVersio: ${AppController.version}`;
+      if (AppController.debugging) {
+        el.innerText = text + salodosi + versio;
+      } else {
+        el.innerText = text + saldosi;
+      }
     },
     updateSettings: function () {
       //get time from DOM
