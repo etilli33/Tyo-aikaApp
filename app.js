@@ -6,7 +6,7 @@ if (navigator.storage && navigator.storage.persist) {
 }
 */
 //Debugging flag to switch on console printing
-const debugging = false;
+const debugging = true;
 
 let AppController = (function () {
   let date = new Date();
@@ -340,7 +340,7 @@ let AppController = (function () {
         if (ownSaldoArray) {
           ownSaldo = arraySum(ownSaldoArray);
           if (debugging) {
-            console.log(this.toHours(ownSaldo));
+            console.log('Oma aika : ' + this.toHours(ownSaldo));
           }
           //write it into memory
           data.logs[
@@ -479,6 +479,7 @@ let AppController = (function () {
         }); //.sort((a,b) => b - a); //sort descending
 
         if (debugging) {
+          console.log('Data sorted by month: ');
           console.log(myDataByMonth);
           window.myDataByMonth = myDataByMonth;
         }
@@ -530,6 +531,7 @@ let AppController = (function () {
         }
 
         if (debugging) {
+          console.log('Taulukko-data: ');
           console.log(printOut);
         }
         return printOut;
@@ -770,8 +772,11 @@ let UIController = (function () {
       } else {
         text = '';
       }
-
+      if (debugging) {
+      el.innerText = text + '\nSaldosi on ' + AppController.getSaldo() + `\nVersio ${AppController.version}`;
+    } else {
       el.innerText = text + '\nSaldosi on ' + AppController.getSaldo();
+    }
     },
     updateSettings: function () {
       //get time from DOM
@@ -1152,6 +1157,45 @@ let Controller = (function (AppController, UIController) {
   let autoLogOut = function () {
     //TODO: log out after 20:15
   };
+
+  //for debugging show console output on the page
+  function rewireLoggingToElement(eleLocator, eleOverflowLocator, autoScroll) {
+    fixLoggingFunc('log');
+    fixLoggingFunc('debug');
+    fixLoggingFunc('warn');
+    fixLoggingFunc('error');
+    fixLoggingFunc('info');
+
+    function fixLoggingFunc(name) {
+        console['old' + name] = console[name];
+        console[name] = function(...arguments) {
+            const output = produceOutput(name, arguments);
+            const eleLog = eleLocator();
+
+            if (autoScroll) {
+                const eleContainerLog = eleOverflowLocator();
+                const isScrolledToBottom = eleContainerLog.scrollHeight - eleContainerLog.clientHeight <= eleContainerLog.scrollTop + 1;
+                eleLog.innerHTML += output + "<br>";
+                if (isScrolledToBottom) {
+                    eleContainerLog.scrollTop = eleContainerLog.scrollHeight - eleContainerLog.clientHeight;
+                }
+            } else {
+                eleLog.innerHTML += output + "<br>";
+            }
+
+            console['old' + name].apply(undefined, arguments);
+        };
+    }
+
+    function produceOutput(name, args) {
+        return args.reduce((output, arg) => {
+            return output +
+                "<span class=\"log-" + (typeof arg) + " log-" + name + "\">" +
+                    (typeof arg === "object" && (JSON || {}).stringify ? JSON.stringify(arg) : arg) +
+                "</span>&nbsp;";
+        }, '');
+      }
+    }
 
   return {
     init: function () {
