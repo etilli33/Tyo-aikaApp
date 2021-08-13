@@ -772,8 +772,8 @@ let UIController = (function () {
       }
       const saldosi = '\nSaldosi on ' + AppController.getSaldo();
       const versio = `\nVersio: ${AppController.version}`;
-      if (AppController.debugging) {
-        el.innerText = text + salodosi + versio;
+      if (debugging) {
+        el.innerText = text + saldosi + versio;
       } else {
         el.innerText = text + saldosi;
       }
