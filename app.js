@@ -640,6 +640,7 @@ let AppController = (function () {
       };
       reader.readAsText(input);
     },
+    version: 20210813,
   };
 })();
 
