@@ -165,7 +165,9 @@ let AppController = (function () {
       //get today-string
       dayString = calcDayString(now);
       // if day is not there  create it
-      this.addEmptyDay(dayString);
+      if (type !== data.mostRecent.type) {
+        this.addEmptyDay(dayString);
+      }
 
       item =
         data.logs[
@@ -372,18 +374,18 @@ let AppController = (function () {
        //starting saldo gets used only in getSaldo function
        data.saldo = parseInt(totalSaldo);
        */
-        if (debugging) {
-          console.log('Koko Saldo: ' + totalSaldo);
-          console.log(
-            'Koko saldo plus aloitussaldo: ' + (totalSaldo + data.startingSaldo)
-          );
-        }
       }
     },
     getSaldo: function () {
       let totalSaldo = 0;
       for (i in data.logs) {
         totalSaldo += data.logs[i].saldo;
+      }
+      if (debugging) {
+        console.log('Koko Saldo: ' + totalSaldo);
+        console.log(
+          'Koko saldo plus aloitussaldo: ' + (totalSaldo + data.startingSaldo)
+        );
       }
       //take startingSaldo only here into account
       return this.toHours(totalSaldo + data.startingSaldo);
