@@ -78,23 +78,9 @@ let AppController = (function () {
       }
       // Find the first IN of today
       const firstIn = todayLog.in.map((e) => e.log).sort()[0];
-      // Find the last OUT after first IN, if any
-      let lastOut = null;
-      if (todayLog.out.length > 0) {
-        // Only consider OUTs after first IN
-        const outsAfterIn = todayLog.out
-          .map((e) => e.log)
-          .filter((l) => l > firstIn);
-        if (outsAfterIn.length > 0) {
-          lastOut = Math.max(...outsAfterIn);
-        }
-      }
-      // Calculate working time for today: from first IN to now (or last OUT if after IN)
-      let endTime = Date.now();
-      if (lastOut && lastOut > firstIn) {
-        endTime = lastOut;
-      }
-      let workingDay = endTime - firstIn;
+      // Calculate working time for today: from first IN to now
+      const endTime = Date.now();
+      const workingDay = endTime - firstIn;
       // Subtract own out saldo for today
       let ownSaldo = 0;
       if (typeof countOwnOutSaldo === "function") {
@@ -102,7 +88,7 @@ let AppController = (function () {
         if (arr) ownSaldo = arr.reduce((a, b) => a + b, 0);
       }
       // Calculate saldo for today so far
-      let saldoToday = workingDay - data.workingTime - ownSaldo;
+      const saldoToday = workingDay - data.workingTime - ownSaldo;
       // Add saldo from previous days
       let totalSaldo = 0;
       for (let i = 0; i < data.logs.length; i++) {
