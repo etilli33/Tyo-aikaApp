@@ -1,5 +1,5 @@
 //Debugging flag to switch on console printing
-const debugging = false;
+const debugging = true;
 
 let AppController = (function () {
   let date = new Date();
