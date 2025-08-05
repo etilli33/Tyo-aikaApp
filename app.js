@@ -762,7 +762,7 @@ let AppController = (function () {
         }
       }
     },
-    version: 20240319.3,
+    version: 20250805,
   };
 })();
 
