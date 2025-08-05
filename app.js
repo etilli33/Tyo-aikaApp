@@ -57,6 +57,62 @@ let AppController = (function () {
   };
 
   return {
+    // Calculate the current saldo up to now if user is logged in
+    calcSaldoNow: function () {
+      // Only calculate saldo now if user is logged in (SISÄÄN)
+      if (data.mostRecent.type !== "SISÄÄN") {
+        return;
+      }
+      // Find today's log
+      const today = new Date();
+      const todayString = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const todayLog = data.logs.find(
+        (log) => log.date.getTime() === todayString.getTime()
+      );
+      if (!todayLog || todayLog.in.length === 0) {
+        return;
+      }
+      // Find the first IN of today
+      const firstIn = todayLog.in.map((e) => e.log).sort()[0];
+      // Find the last OUT after first IN, if any
+      let lastOut = null;
+      if (todayLog.out.length > 0) {
+        // Only consider OUTs after first IN
+        const outsAfterIn = todayLog.out
+          .map((e) => e.log)
+          .filter((l) => l > firstIn);
+        if (outsAfterIn.length > 0) {
+          lastOut = Math.max(...outsAfterIn);
+        }
+      }
+      // Calculate working time for today: from first IN to now (or last OUT if after IN)
+      let endTime = Date.now();
+      if (lastOut && lastOut > firstIn) {
+        endTime = lastOut;
+      }
+      let workingDay = endTime - firstIn;
+      // Subtract own out saldo for today
+      let ownSaldo = 0;
+      if (typeof countOwnOutSaldo === "function") {
+        const arr = countOwnOutSaldo(todayLog);
+        if (arr) ownSaldo = arr.reduce((a, b) => a + b, 0);
+      }
+      // Calculate saldo for today so far
+      let saldoToday = workingDay - data.workingTime - ownSaldo;
+      // Add saldo from previous days
+      let totalSaldo = 0;
+      for (let i = 0; i < data.logs.length; i++) {
+        if (data.logs[i].date.getTime() !== todayString.getTime()) {
+          totalSaldo += data.logs[i].saldo;
+        }
+      }
+      // Add startingSaldo
+      return this.toHours(totalSaldo + saldoToday + data.startingSaldo);
+    },
     // Setting data into local storage
     storeData: function () {
       if (typeof Storage !== "undefined") {
@@ -931,15 +987,18 @@ let UIController = (function () {
       el = document.getElementById(DOMStrings.status);
       if (AppController.mostRecentLogging().type === "SISÄÄN") {
         text = "Olet kirjautunut sisään.";
+        // Show saldo now
+        const saldoNow = AppController.calcSaldoNow();
+        text += `\n(Jos lähtisit nyt, saldosi olisi ${saldoNow})`;
       } else if (AppController.mostRecentLogging().type === "ULOS") {
         text = "Olet kirjautunut ulos.";
       } else {
         text = "";
       }
-      const saldosi = `\nSaldosi on ${AppController.getSaldo()}`;
+      const saldosi = "\nSaldosi on " + AppController.getSaldo();
       const versio = `\nVersio: ${AppController.version}`;
-      if (AppController.debugging) {
-        el.innerText = text + salodosi + versio;
+      if (debugging) {
+        el.innerText = text + saldosi + versio;
       } else {
         el.innerText = text + saldosi;
       }
@@ -1428,14 +1487,19 @@ let Controller = (function (AppController, UIController) {
       console.log("Application has started.");
       UIController.setModal();
       //setInterval(setNow(), 1000);
+
       //Show the time
       document.getElementById("tyoaika").innerText =
         new Date().toLocaleTimeString();
-      //update time every second
+      // Update time every second
       setInterval(function () {
         document.getElementById("tyoaika").innerText =
           new Date().toLocaleTimeString();
       }, 1000);
+      // Update saldo/status every minute
+      setInterval(function () {
+        UIController.status();
+      }, 60000);
 
       loadData();
       setupEventListeners();
